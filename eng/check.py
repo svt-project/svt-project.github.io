@@ -73,7 +73,7 @@ for path in ROOT.rglob('*.md'):
     for link in re.findall(r'\]\(([^)]+)\)', content):
         check_link(path, link)
 
-assets = PUBLIC / 'assets/icons/v1'
+assets = PUBLIC / 'assets/icons/v2'
 ns = '{http://www.w3.org/2000/svg}'
 for path in assets.glob('svg/*.svg'):
     tree = ET.parse(path)
@@ -102,19 +102,18 @@ for path in assets.glob('*.icns'):
 spec = importlib.util.spec_from_file_location('package_icons', ROOT / 'eng/package-icons.py')
 package = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(package)
-for name, cc0 in [('svt-icons-cc0-v1.zip', True), ('svt-icons-complete-v1.zip', False)]:
-    path = PUBLIC / 'assets/downloads' / name
-    require(path.read_bytes() == package.archive_bytes(cc0), f'{name}: stale archive; run eng/package-icons.py')
-    with zipfile.ZipFile(path) as archive:
-        require(archive.testzip() is None, f'{name}: corrupt ZIP')
-        require(not cc0 or all('svt-file-ui-' not in n and 'Phosphor' not in n for n in archive.namelist()), 'CC0 archive includes third-party artwork')
-        for line in archive.read('svt-icons-v1/SHA256SUMS').decode().splitlines():
-            digest, filename = line.split('  ', 1)
-            require(hashlib.sha256(archive.read('svt-icons-v1/' + filename)).hexdigest() == digest, f'{name}: bad asset digest')
+path = PUBLIC / 'assets/downloads' / package.ARCHIVE_NAME
+require(path.read_bytes() == package.archive_bytes(), 'Stale archive; run eng/package-icons.py')
+with zipfile.ZipFile(path) as archive:
+    require(archive.testzip() is None, 'Corrupt ZIP')
+    require(package.ARCHIVE_ROOT + 'CC0-1.0.txt' in archive.namelist(), 'CC0 dedication missing')
+    for line in archive.read(package.ARCHIVE_ROOT + 'SHA256SUMS').decode().splitlines():
+        digest, filename = line.split('  ', 1)
+        require(hashlib.sha256(archive.read(package.ARCHIVE_ROOT + filename)).hexdigest() == digest, 'Bad asset digest')
 for line in (PUBLIC / 'assets/downloads/SHA256SUMS').read_text().splitlines():
     digest, name = line.split('  ', 1)
     require(hashlib.sha256((PUBLIC / 'assets/downloads' / name).read_bytes()).hexdigest() == digest, 'Bad archive checksum')
 require('https://svt-project.github.io/ns/svt' in (PUBLIC / 'ns/svt/index.html').read_text(), 'Namespace missing')
 if errors:
     raise SystemExit('\n'.join(errors))
-print(f'Passed: {len(pages)} pages, local HTML/Markdown links, SVG safety, PNG/ICO/ICNS structure, license separation and reproducible archives.')
+print(f'Passed: {len(pages)} pages, local HTML/Markdown links, SVG safety, PNG/ICO/ICNS structure, CC0 package and reproducible archive.')

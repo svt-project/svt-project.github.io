@@ -9,8 +9,8 @@
 - Link authoritative specification prose and canonical assets in `svt-spec`; do not copy them
   or fetch them during builds. The specification stays self-contained and does not depend on this site.
 - Cookbook, playground and TypeScript implementation are separate follow-ups tracked in `.github`.
-- Original icon artwork is CC0. Phosphor-derived `svt-file-ui-*` assets remain MIT; preserve their
-  attribution and full license. Site code and prose are MIT. See the icon package's LICENSE.md.
+- All project branding artwork and icon-package documentation are CC0. Use original geometry;
+  keep provider-specific adaptations in consuming applications. Site code and other prose are MIT.
 - Released asset folders are snapshots. Publish a new folder/download when updating artwork;
   do not silently replace an established download. Keep the license boundaries explicit.
 - Run `python3 eng/check.py` before committing; inspect responsive pages when changing layout.

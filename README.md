@@ -5,7 +5,7 @@ Static project pages for [Scalable Vector Templates](https://svt-project.github.
 - `public/index.html`: introduction and links to the specification and .NET implementation.
 - `public/ns/svt/index.html`: reference page for the stable XML metadata namespace.
 - `public/resources/index.html`: logos and integrator file icons.
-- `public/assets/icons/v1/`: editable SVG masters, raster exports and desktop icon containers.
+- `public/assets/icons/v2/`: editable SVG masters, raster exports and desktop icon containers.
 
 The specification remains self-contained in [svt-spec](https://github.com/svt-project/svt-spec).
 This site links it without copying its authoritative text or fetching it during deployment.
@@ -29,10 +29,9 @@ URL without a trailing slash may redirect to the HTML directory; its XML identit
 
 ## Artwork and licenses
 
-Original SVT marks, avatars and outlined document icons are dedicated under CC0 1.0, with no
-attribution requirement. The filled `svt-file-ui-*` icons adapt Phosphor artwork and retain MIT
-attribution. See the explicit [asset license map](public/assets/icons/v1/LICENSE.md) and
-[integration guidance](public/assets/icons/v1/README.md).
+All SVT marks, avatars, outlined document icons and filled UI icons are dedicated under CC0 1.0,
+with no attribution requirement. See the [asset dedication](public/assets/icons/v2/LICENSE.md) and
+[integration guidance](public/assets/icons/v2/README.md).
 
 SVG masters are editable source. Raster exports preserve the same geometry; for example, use resvg
 with `--width 256 --height 256 input.svg output.png`. Small masters cover 16–32 px. Desktop containers
@@ -43,8 +42,8 @@ python3 eng/package-icons.py
 python3 eng/check.py
 ```
 
-The script creates deterministic downloads with checksums. Once published, retain `v1` unchanged;
-use a new asset folder and download version for revisions. Asset numbering is independent of the
+The script creates deterministic downloads with checksums. Once published, retain a snapshot unchanged;
+use a new asset folder and download version for revisions. The current set is `v2`. Asset numbering is independent of the
 specification and implementation releases. Integrators should embed a downloaded snapshot.
 
 Site code and prose are [MIT-licensed](LICENSE), except where the asset-specific licenses apply.
