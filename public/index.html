@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SVT — Scalable Vector Templates</title>
+<meta name="description" content="Named text, paint and image inputs in ordinary SVG. Discover the specification, .NET implementation and project icons.">
+<link rel="canonical" href="https://svt-project.github.io/">
+<link rel="icon" type="image/svg+xml" href="/assets/icons/v1/svg/svt-avatar-light.svg">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header>
+<div class="wrap">
+<a class="brand" href="/" aria-label="SVT home">
+<img src="/assets/icons/v1/svg/svt-mark-light.svg" alt="" width="42" height="42">SVT</a>
+<nav aria-label="Main navigation">
+<a href="https://github.com/svt-project/svt-spec/tree/v1.0.0-rc.1/spec/README.md">Specification</a>
+<a href="/resources/">Icons</a>
+<a href="https://github.com/svt-project">GitHub</a>
+</nav>
+</div>
+</header>
+<main id="main" class="wrap">
+<section class="hero">
+<div>
+<p class="eyebrow">Scalable Vector Templates</p>
+<h1>Your SVG.<br>New possibilities.</h1>
+<p class="intro">Give ordinary SVG named text, paint and image inputs. Keep the artwork you designed, and replace the values that make it yours.</p>
+<div class="actions">
+<a class="button" href="https://github.com/svt-project/svt-spec/tree/v1.0.0-rc.1/spec/README.md">Read the specification</a>
+<a href="https://github.com/svt-project/svt-dotnet">Use SVT in .NET →</a>
+</div>
+</div>
+<div class="example" aria-label="Illustrative text replacement">
+<div class="example-top">
+<span>A named input</span>
+<span>template.svg</span>
+</div>
+<pre>
+<code>&lt;svg xmlns="http://www.w3.org/2000/svg"
+     data-svt-version="1.0"
+     viewBox="0 0 320 80"&gt;
+  &lt;text x="16" y="48"
+        data-svt-text="heading"&gt;
+    Welcome
+  &lt;/text&gt;
+&lt;/svg&gt;</code>
+</pre>
+<div class="sample">
+<span>heading → “Hello, world”</span>
+<strong>Hello, world</strong>
+</div>
+<p class="caption">An illustrative replacement. SVG keeps control of layout and rendering.</p>
+</div>
+</section>
+<section class="section split">
+<div>
+<p class="eyebrow">A small layer over SVG</p>
+<h2>Design once.<br>Make the inputs explicit.</h2>
+</div>
+<div>
+<p>Annotate the parts of an SVG that can change. An implementation discovers those inputs and their authored defaults, then applies replacement values to an independent SVG document.</p>
+<p>Text, image references and paint values become addressable inputs. Optional metadata adds labels, descriptions and groups for editing tools. Geometry, fonts, clipping and layout stay with SVG.</p>
+<p>Templates remain <code>.svg</code> files. Processing does not require fetching a schema or contacting this website.</p>
+</div>
+</section>
+<section class="section split">
+<div>
+<p class="eyebrow">Explore the project</p>
+<h2>One format.<br>Independent implementations.</h2>
+</div>
+<div class="links">
+<div class="link-row">
+<h3>
+<a href="https://github.com/svt-project/svt-spec/tree/v1.0.0-rc.1/spec/README.md">The specification ↗</a>
+</h3>
+<p>Portable contracts and canonical conformance references. Read the published <a href="https://github.com/svt-project/svt-spec/releases/tag/v1.0.0-rc.1">1.0.0-rc.1 candidate</a>, or follow work in the repository.</p>
+</div>
+<div class="link-row">
+<h3>
+<a href="https://github.com/svt-project/svt-dotnet">.NET library and CLI ↗</a>
+</h3>
+<p>Inspect templates and bind values in applications or command-line workflows. Get <a href="https://www.nuget.org/packages/ScalableVectorTemplates">ScalableVectorTemplates</a> and <a href="https://www.nuget.org/packages/ScalableVectorTemplates.Cli">ScalableVectorTemplates.Cli</a> on NuGet.</p>
+</div>
+<div class="link-row">
+<h3>
+<a href="https://github.com/svt-project/.github/issues">Project roadmap ↗</a>
+</h3>
+<p>Follow specification feedback, the independent TypeScript implementation and cookbook work.</p>
+</div>
+</div>
+</section>
+<section class="section split">
+<div>
+<p class="eyebrow">For integrators</p>
+<h2>A familiar mark<br>for your templates.</h2>
+<div class="asset-strip">
+<img src="/assets/icons/v1/svg/svt-mark-light.svg" alt="SVT project logo" width="72" height="72">
+<img src="/assets/icons/v1/svg/svt-document-light.svg" alt="Outlined SVT file icon" width="72" height="72">
+<img src="/assets/icons/v1/svg/svt-file-ui-light.svg" alt="Filled SVT file icon" width="72" height="72">
+</div>
+</div>
+<div>
+<p>Use the SVT logo in your project or give template files a recognizable icon. Download editable SVGs, raster exports and desktop icon formats.</p>
+<p>Original SVT logos and outlined document icons are CC0, with no attribution required. The optional Phosphor-derived filled icons retain their MIT notice.</p>
+<a class="button" href="/resources/">Get the icon set</a>
+</div>
+</section>
+</main>
+<footer>
+<div class="wrap">
+<p>Scalable Vector Templates · Founded by Bathos</p>
+<p>
+<a href="/ns/svt">Namespace reference</a> · <a href="https://github.com/svt-project/svt-project.github.io">Site source</a>
+</p>
+</div>
+</footer>
+</body>
+</html>
