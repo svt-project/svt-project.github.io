@@ -1,14 +1,15 @@
 # SVT icons
 
-A picture above angle brackets: image and code in one filled silhouette. The landscape cutout
-and mirrored `<>` pair remain the same recognizable motif from 16 through 64 logical pixels.
+A picture above angle brackets: image and code in one recognizable identity. Application and file
+icons use a monochrome filled silhouette; colored avatars use separate picture and code elements
+without an outer frame. The landscape and mirrored `<>` pair remain clear from 16 through 64 logical pixels.
 The file treatment uses a shallower picture beneath its clipped corner and exactly the same
 bracket pair as the square mark. No dots, dashes, text or extra detail appear at larger sizes.
 
 ## Treatments and colors
 
 - `svt-mark-{size}-{theme}.svg`: filled square project mark with transparent image/code cutouts.
-- `svt-avatar-{size}-{theme}.svg`: the same mark with a pale or dark background behind its cutouts.
+- `svt-avatar-{size}-{theme}.svg`: an ink picture and jade brackets on a pale background, or pale picture and mint brackets on dark.
 - `svt-document-{size}-{theme}.svg`: desktop file silhouette with paper behind its cutouts.
 - `svt-file-ui-{size}-{theme}.svg`: filled file silhouette with transparent image/code cutouts.
 
@@ -22,8 +23,9 @@ Marks and filled UI SVGs each contain one compound path. Preserve `fill-rule="ev
 and transparency when importing that path into a renderer. All masters are self-contained vectors
 without fonts, scripts, raster images or external references.
 
-Palette: deep ink `#173B45`, pale `#ECFAF6`, and white paper.
-The entire motif uses one foreground; both image and code remain distinguishable without color. Tint is never a conformance indicator.
+Palette: deep ink `#173B45`, pale `#ECFAF6`, and white paper. Avatars add jade `#008F78` on
+light surfaces and mint `#59E2BF` on dark surfaces. Application and file icons retain one foreground.
+Shape identifies the picture and code independently of color; tint is never a conformance indicator.
 
 ## Choose by displayed size, then density
 
@@ -44,8 +46,8 @@ These exports do not change operating-system file associations themselves.
 
 ## Avatars for circular crops
 
-`svt-avatar-padded-96-{theme}.svg` supplies the 64 px mark centered on an opaque 96 px canvas,
-with 16 px of padding on each side. The entire mark fits inside an inscribed circle; upload the
+`svt-avatar-padded-96-{theme}.svg` supplies the 64 px colored avatar centered on an opaque 96 px canvas,
+with 16 px of padding on each side. The entire motif fits inside an inscribed circle; upload the
 square image and let the profile host apply its circular crop. Light and dark themes use the
 same backgrounds as the square avatars. This is a profile-image treatment, not a small UI icon.
 

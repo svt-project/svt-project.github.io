@@ -1,7 +1,8 @@
 # Icon output and acceptance requirements
 
 These requirements apply to the branding package, independently of specification conformance.
-The icon combines a landscape picture and angle brackets inside a filled silhouette. Both cues
+The identity combines a landscape picture and angle brackets. Application and file icons use a
+monochrome filled silhouette; avatars use separate picture and colored bracket elements. Both cues
 must survive at actual UI sizes, in monochrome as well as color. Square and file treatments share
 one image-and-code identity; the icon is not a conformance or readiness badge.
 
@@ -13,7 +14,7 @@ one image-and-code identity; the icon is not a conformance or readiness badge.
 | Avatar | light, dark | 16, 20, 24, 32, 48, 64 |
 | Paper-backed document | light, dark | 16, 20, 24, 32, 48, 64 |
 | Filled UI file | light, dark, black, white, tintable | 16, 20, 24, 32, 48, 64 |
-| Padded profile avatar | light, dark | 96 px canvas containing the 64 px mark |
+| Padded profile avatar | light, dark | 96 px canvas containing the 64 px avatar |
 
 All dimensions are square logical pixels. The complete inventory is **86 SVG masters**: 84 optical
 drawings and two padded avatars. The optical drawings supply 180 PNGs: 1×/2× for each fixed-color
@@ -29,9 +30,9 @@ the 64 px master. Both container types must embed the corresponding PNG bytes wi
 
 ## Geometry and raster invariants
 
-- Padded profile avatars center the unchanged 64 px mark on an opaque 96 px canvas with 16 px
+- Padded profile avatars center the 64 px colored avatar on an opaque 96 px canvas with 16 px
   padding. Every foreground pixel must survive an inscribed circular crop at every raster size.
-  Their 96/192 px renders must also preserve the central mark’s 64 px optical features at 1×/2×.
+  Their 96/192 px renders must also preserve the central avatar’s 64 px optical features at 1×/2×.
 
 - Square marks fill the logical viewport; files fill its height with centered inset sides and a
   clipped corner. These filled bounds balance with other filled entity icons. Add host padding
@@ -49,14 +50,20 @@ the 64 px master. Both container types must embed the corresponding PNG bytes wi
   doubles those coordinates.
 - At 16 px, every image and bracket vertex is on a whole logical pixel. The 20 px drawing is
   independently adjusted. Larger optical drawings retain the same motif, without adding detail.
-- Every 1×/2× raster must preserve the open picture, both bracket cutouts, the ink in each inner
+- Every monochrome 1×/2× raster must preserve the open picture, both bracket cutouts, the ink in each inner
   notch, the solid center bridge, and a solid row between image and code. Test feature interiors,
   rather than requiring identical antialiased diagonal-edge pixels: mirrored vector geometry can
   produce different edge coverage in different renderers. Inspect those edges visually at native
   size and on the consuming platform.
 - Marks and filled UI files each contain one even-odd compound path with transparent cutouts.
-  Avatars and desktop documents add a background behind the same geometry. No font, raster,
+  Desktop documents add paper behind their cutouts. Avatars have a background, an ink picture
+  element with its own border, and jade (light) or mint (dark) brackets, with no outer frame. No font, raster,
   script, event handler or external resource is allowed inside an SVG master.
+
+- Avatar picture borders are at least one logical pixel thick, with at least one pixel of
+  background between picture and code. At 16/20 px the sky is one pixel shallower to preserve that
+  gap. At 1×/2×, the picture border and mountain retain the ink color, both brackets retain their
+  accent, and the sky, center gap and bracket notches remain open background.
 
 | Logical size | Square picture bounds | File picture bounds | Bracket center bridge |
 | --- | --- | --- | --- |

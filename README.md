@@ -35,12 +35,13 @@ All SVT marks, avatars, desktop document icons and filled UI icons are dedicated
 with no attribution requirement. See the [asset dedication](public/assets/icons/LICENSE.md) and
 [integration guidance](public/assets/icons/README.md).
 
-The motif is a landscape picture above angle brackets in a filled silhouette. Dedicated optical drawings
+The motif is a landscape picture above angle brackets. Application and file icons use a monochrome
+filled silhouette; avatars use an ink picture and jade/mint brackets without an outer frame. Dedicated optical drawings
 cover 16, 20, 24, 32, 48 and 64 logical pixels. See the
 [output and acceptance requirements](public/assets/icons/REQUIREMENTS.md) for the complete matrix
 and the distinction between optical size and raster density. The resources page displays actual-size
 1×/2× samples in all four optical treatments on light and dark backgrounds. Padded profile avatars
-retain the 64 px mark on a 96 px canvas for circular crops, with PNG exports through 1024 px.
+retain the 64 px colored avatar on a 96 px canvas for circular crops, with PNG exports through 1024 px.
 
 `public/assets/icons/geometry.json` and `eng/icon_artwork.py` own the original geometry. SVG/PNG
 outputs are committed distribution assets. Regeneration uses Python 3 and **resvg 0.47.0**, supplied
@@ -53,7 +54,7 @@ python3 eng/check.py
 ```
 
 The normal check runs offline. It verifies source-to-SVG consistency, the full inventory, alignment
-and clearances, decoded PNG cutouts, notches and solid separators at 1×/2×, circular-crop safety, exact desktop-container payloads,
+and clearances, decoded PNG cutouts, notches and solid separators at 1×/2×, avatar color/separation checks, circular-crop safety, exact desktop-container payloads,
 regression tests, and deterministic archives. It also checks all site/package links. Inspect the
 visual acceptance matrix before accepting artwork: automatic checks cannot establish recognition.
 Repeat regeneration and packaging to confirm there is no further diff.

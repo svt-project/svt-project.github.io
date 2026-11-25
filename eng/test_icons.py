@@ -2,7 +2,7 @@
 import copy
 import unittest
 from icon_artwork import GEOMETRY, png_path
-from icon_checks import avatar_crop_errors, geometry_errors, pixel_errors, read_png
+from icon_checks import avatar_crop_errors, avatar_pixel_errors, geometry_errors, pixel_errors, read_png
 
 
 class IconAcceptanceTests(unittest.TestCase):
@@ -103,7 +103,22 @@ class IconAcceptanceTests(unittest.TestCase):
     def test_padded_avatar_still_requires_the_picture_and_code(self):
         _, _, rows = read_png(png_path('avatar-padded', 96, 'light', 96).read_bytes())
         rows = [bytes.fromhex('ECFAF6FF')*96 for _ in rows]
-        self.assertIn('Picture cutout is missing', pixel_errors(rows, 96, 'avatar-padded', 1))
+        self.assertIn('Avatar picture border is missing or has the wrong color', avatar_pixel_errors(rows, 96, 1, 'light'))
+
+    def test_avatar_brackets_must_retain_the_accent_color(self):
+        _, _, rows = read_png(png_path('avatar', 16, 'light', 16).read_bytes())
+        rows = [bytearray(row) for row in rows]
+        for row in rows:
+            for x in range(16):
+                if row[x*4:x*4+4] == bytes.fromhex('008F78FF'):
+                    row[x*4:x*4+4] = bytes.fromhex('173B45FF')
+        self.assertIn('Left avatar bracket is missing or has the wrong color', avatar_pixel_errors(rows, 16, 1, 'light'))
+
+    def test_avatar_picture_and_code_cannot_merge(self):
+        _, _, rows = read_png(png_path('avatar', 16, 'light', 16).read_bytes())
+        rows = [bytearray(row) for row in rows]
+        rows[8][8*4:9*4] = bytes.fromhex('173B45FF')
+        self.assertIn('Avatar image/code separation must remain background', avatar_pixel_errors(rows, 16, 1, 'light'))
 
 
 if __name__ == '__main__':

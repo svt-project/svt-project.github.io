@@ -50,7 +50,11 @@ def geometry_errors(layouts):
                 break
         if min(bx-sx, sx+sw-(size-bx), size-bb) < 1:
             errors.append(f'{size}: insufficient bracket silhouette clearance')
-        for name in ('square', 'file'):
+        ax, ay, aw, ah, _ = layout['avatar']['frame']
+        ix, iy, ir, ib = bounds(layout['avatar']['image'])
+        if ax+aw/2 != size/2 or min(ix-ax, iy-ay, ax+aw-ir, ay+ah-ib, by-ay-ah) < 1:
+            errors.append(f'{size}: avatar picture needs centered bounds, a visible border and code separation')
+        for name in ('square', 'file', 'avatar'):
             image = layout[name]['image']
             if len(image) != 6:
                 errors.append(f'{size} {name}: landscape must have six vertices')
@@ -128,10 +132,6 @@ def read_png(data):
 
 
 def pixel_errors(rows, size, family, density):
-    if family == 'avatar-padded':
-        # At 1x/2x the unscaled central mark must retain every optical feature.
-        inset, end = int(16*density), int(80*density)
-        return pixel_errors([row[inset*4:end*4] for row in rows[inset:end]], 64, 'avatar', density)
     layout = GEOMETRY['layouts'][str(size)]
     image = layout['square' if family in ('mark', 'avatar') else 'file']['image']
     x, y, right, bottom = bounds(image)
@@ -178,6 +178,51 @@ def pixel_errors(rows, size, family, density):
     return sorted(set(errors))
 
 
+def avatar_pixel_errors(rows, size, density, theme):
+    if size == 96:
+        inset, end = int(16*density), int(80*density)
+        return avatar_pixel_errors([row[inset*4:end*4] for row in rows[inset:end]], 64, density, theme)
+    layout = GEOMETRY['layouts'][str(size)]
+    image = layout['avatar']['image']
+    x, y, right, bottom = bounds(image)
+    fx, fy, fw, fh, _ = layout['avatar']['frame']
+    bx, by, br, bb = bounds(layout['bracket'])
+    ink, accent, background = (bytes.fromhex(c) for c in (
+        ('173B45FF', '008F78FF', 'ECFAF6FF') if theme == 'light'
+        else ('ECFAF6FF', '59E2BFFF', '173B45FF')))
+    errors = []
+
+    def pixel(px, py):
+        row, col = math.floor(py*density), math.floor(px*density)
+        return rows[row][col*4:col*4+4]
+
+    if pixel(size/2, fy+0.5) != ink:
+        errors.append('Avatar picture border is missing or has the wrong color')
+    if pixel(x+0.5, y+0.5) != background:
+        errors.append('Avatar sky does not remain open')
+    peak_x, peak_y = image[3]
+    if pixel(peak_x, (peak_y+bottom)/2) != ink:
+        errors.append('Avatar landscape mountain is missing or has the wrong color')
+    for label, left, top, end, last in (
+            ('center gap', br, by, size-br, bb),
+            ('image/code separation', fx, fy+fh, fx+fw, by)):
+        samples = [rows[row][col*4:col*4+4]
+                   for row in range(math.ceil(top*density), math.floor(last*density))
+                   for col in range(math.ceil(left*density), math.floor(end*density))]
+        if not samples or any(sample != background for sample in samples):
+            errors.append(f'Avatar {label} must remain background')
+    mid = layout['bracket'][1][1]
+    for label, left, end in (('Left', bx, br), ('Right', size-br, size-bx)):
+        row = math.floor(mid*density)
+        if not any(rows[row][col*4:col*4+4] == accent
+                   for col in range(math.ceil(left*density), math.floor(end*density))):
+            errors.append(f'{label} avatar bracket is missing or has the wrong color')
+    for px in (br-0.5, size-br+0.5):
+        if pixel(px, mid) != background:
+            errors.append('Avatar bracket notch does not remain open')
+    return sorted(set(errors))
+
+
 def avatar_crop_errors(rows, theme):
     """An inscribed circular crop may remove background, but no foreground pixels."""
     size = len(rows)
@@ -217,7 +262,10 @@ def check_assets():
                     errors.append(f'{name}/{pixels}: wrong PNG dimensions')
                 else:
                     if pixels in (size, size*2):
-                        errors.extend(f'{name}/{pixels}: {error}' for error in pixel_errors(rows, size, family, pixels/size))
+                        failures = (avatar_pixel_errors(rows, size, pixels/size, theme)
+                                    if family in ('avatar', 'avatar-padded')
+                                    else pixel_errors(rows, size, family, pixels/size))
+                        errors.extend(f'{name}/{pixels}: {error}' for error in failures)
                     if family == 'avatar-padded':
                         errors.extend(f'{name}/{pixels}: {error}' for error in avatar_crop_errors(rows, theme))
             except (ValueError, IndexError, struct.error, zlib.error) as error:

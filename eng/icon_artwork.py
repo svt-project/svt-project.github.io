@@ -65,13 +65,17 @@ def svg(family, size, theme):
     }[theme]
     outer = rounded(*layout['frame']) if drawing_family in ('mark', 'avatar') else sheet(*layout['sheet'])
     body = path(outer + motif(layout, drawing_size, drawing_family), ink)
-    if padded:
-        # Keep the 64 px mark intact on a 96 px canvas, inside its inscribed circle.
+    if drawing_family == 'avatar':
         background = '#ECFAF6' if theme == 'light' else '#173B45'
-        body = path(rect(0, 0, size, size), background) + f'<g transform="translate(16 16)">{body}</g>'
-    elif family == 'avatar':
-        background = '#ECFAF6' if theme == 'light' else '#173B45'
-        body = path(outer, background) + body
+        accent = '#008F78' if theme == 'light' else '#59E2BF'
+        picture = rounded(*layout['avatar']['frame']) + polygon(layout['avatar']['image'])
+        brackets = polygon(layout['bracket']) + polygon([(drawing_size-x, y) for x, y in layout['bracket']])
+        body = path(picture, ink) + path(brackets, accent)
+        if padded:
+            # Preserve the 64 px avatar inside the 96 px canvas's inscribed circle.
+            body = path(rect(0, 0, size, size), background) + f'<g transform="translate(16 16)">{body}</g>'
+        else:
+            body = path(outer, background) + body
     elif family == 'document':
         # Desktop documents retain paper behind the cutouts; UI files remain transparent.
         body = path(outer, paper) + body
