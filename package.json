@@ -1,0 +1,22 @@
+{
+  "name": "svt-project-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:cookbook": "npm run typecheck && esbuild eng/build-cookbook.tsx --bundle --platform=node --format=esm --packages=external --outfile=.local/build-cookbook.mjs && node .local/build-cookbook.mjs",
+    "preview:cookbook": "esbuild --serve=127.0.0.1:8788 --servedir=.local/site",
+    "build:pages": "tsc -p tsconfig.pages.json && esbuild eng/build-pages.ts --bundle --platform=node --format=esm --packages=external --outfile=.local/build-pages.mjs && node .local/build-pages.mjs",
+    "typecheck": "tsc -p tsconfig.json && tsc -p cookbook/tsconfig.worker.json"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "esbuild": "0.28.2",
+    "typescript": "7.0.2"
+  },
+  "dependencies": {
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  }
+}

@@ -20,6 +20,14 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Verify generated public pages
+        run: |
+          npm ci --ignore-scripts
+          npm run build:pages
+          git diff --exit-code -- public
       - name: Validate pages and icon packages
         run: python3 eng/check.py
       - name: Configure Pages

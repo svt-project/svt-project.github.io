@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" data-svt-version="1.0" viewBox="0 0 720 280" font-family="sans-serif">
+  <rect width="720" height="280" fill="#fae7cd"/>
+  <path d="M104 86v126m512 -126v126" stroke="#b36942" stroke-dasharray="4 5"/>
+  <text x="104" y="67" fill="#7f4c30" font-size="14" letter-spacing="3">HARBOR LETTERING</text>
+  <text x="104" y="172" textLength="512" lengthAdjust="spacingAndGlyphs" font-family="Georgia,serif" font-size="75" fill="#653d31" data-svt-text="harbor">West Bay</text>
+  <path d="M104 220h512" stroke="#b36942"/>
+</svg>

@@ -1,6 +1,7 @@
 # Agent guidance
 
 - Use American English. Work serially; request approval before delegating.
+- Write site and cookbook components in strict TypeScript (TSX) and their supporting code and Node build scripts in TypeScript.
 - Check Git status before editing. Default branch: `master`.
 - This repository owns the project landing page, `/ns/svt` reference page, optional branding
   assets and future cookbook content. Keep the initial site static and useful without JavaScript.

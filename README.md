@@ -11,15 +11,22 @@ The specification remains self-contained in [svt-spec](https://github.com/svt-pr
 This site links it without copying its authoritative text or fetching it during deployment.
 The JavaScript implementation lives in [svt-js](https://github.com/svt-project/svt-js), with npm
 identity `@svt-project/svt-js` (publication pending). Include the scope in all installation and import
-examples. Cookbook and playground work remain follow-ups in the
-[coordinator](https://github.com/svt-project/.github/issues).
+examples. Local authoring guide work is tracked in the
+[coordinator](https://github.com/svt-project/.github/issues/5).
 
 ## Development and deployment
 
-No framework, JavaScript runtime, package installation or remote content fetch is required.
-Python 3 is used only for validation, packaging and local preview:
+Edit the React components as TSX in `site/`. `site/Layout.tsx` owns the shared project banner,
+navigation and footer. Every page uses the same menu for a given build. The cookbook
+preview adds the guide to that menu. Page content lives in `site/pages/` and `cookbook/`.
+
+Use Node 24.2 or later to regenerate the three public HTML files after component edits.
+The generated pages in `public/` serve directly from GitHub Pages and work with JavaScript disabled.
+The public build type-checks the page sources independently of the locally linked SVT package.
 
 ```sh
+npm ci
+npm run build:pages
 python3 eng/check.py
 python3 -m http.server 8000 --directory public
 ```
@@ -28,6 +35,36 @@ GitHub Actions validates pull requests and publishes `public/` to GitHub Pages a
 `master`. Pages uses the GitHub Actions source and the `github-pages` environment. The namespace
 URL without a trailing slash may redirect to the HTML directory; its XML identity remains exactly
 `https://svt-project.github.io/ns/svt`.
+
+## Local authoring guide
+
+The seven interactive exercises in `cookbook/` run against the public entry point of
+`@svt-project/svt-js`. Use Node 24 or later. In the library checkout run
+`npm ci --ignore-scripts` and `npm run build`. Then, from this site checkout:
+
+```sh
+npm ci
+npm link --no-save --package-lock=false /path/to/svt-js
+npm run build:cookbook
+npm run preview:cookbook
+```
+
+With the library linked, `npm run typecheck` checks the entire TypeScript site, including the cookbook
+components, Node build scripts, and dedicated Worker. Both build commands run their type checks
+before generating output.
+
+Open [the local guide](http://127.0.0.1:8788/cookbook/). Rebuild after editing a recipe or
+rebuilding the linked library. The build writes the preview to ignored `.local/site/`, inspects
+every template, embeds its default artwork for standalone downloads, and bundles the guide’s
+browser Worker. The readable excerpts and preview come from the same recipe. With JavaScript
+disabled, the descriptions, authored artwork, navigation, excerpts, and downloads still work.
+
+The local trial started with svt-js commit
+[`e0a39ce`](https://github.com/svt-project/svt-js/commit/e0a39ce2c918bc2c722e0eb84cd4a26ddffc4ded)
+and its [accepted specification snapshot](https://github.com/svt-project/svt-spec/tree/21e677727545dc3d9fe30511fbddc93ca023851e).
+These exercises test authoring and browser behavior. Font metrics and glyph coverage depend on
+installed fonts. Before deploying the guide, pin the published 1.0 package and lockfile, build
+the guide in Pages CI, and upload the built site tree.
 
 ## Artwork and licenses
 

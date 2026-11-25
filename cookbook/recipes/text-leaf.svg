@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" data-svt-version="1.0" viewBox="0 0 720 280" font-family="sans-serif">
+  <rect width="720" height="280" fill="#183f42"/>
+  <path d="M460 190q30 -20 60 0t60 0t60 0t60 0M460 206q30 -20 60 0t60 0t60 0t60 0" fill="none" stroke="#6eb3a2" stroke-width="2"/>
+  <text x="50" y="64" fill="#b7ddcd" font-size="14" letter-spacing="4">TIDE GAUGE</text>
+  <text x="45" y="185" fill="#fff6d9" font-size="86"><tspan data-svt-text="depth">2.4</tspan><tspan dx="9" font-size="30">m</tspan></text>
+  <path d="M50 217h335" stroke="#9db8a8"/>
+  <text x="50" y="246" fill="#b7ddcd" font-size="14">Height above chart datum</text>
+</svg>

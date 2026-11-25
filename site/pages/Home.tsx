@@ -1,0 +1,232 @@
+import type { ReactNode } from 'react';
+import { PageIntro } from '../PageIntro.tsx';
+function BindingExample() {
+  return (
+    <div className="example" aria-label="Illustrative text replacement">
+      <div className="example-top">
+        <span>A named input</span>
+        <span>template.svg</span>
+      </div>
+      <pre>
+        <code>{`<svg xmlns="http://www.w3.org/2000/svg"
+     data-svt-version="1.0"
+     viewBox="0 0 320 80">
+  <text x="16" y="48"
+        data-svt-text="heading">
+    Welcome
+  </text>
+</svg>`}</code>
+      </pre>
+      <div className="sample">
+        <span>heading → “Hello, world”</span>
+        <strong>Hello, world</strong>
+      </div>
+      <p className="caption">
+        An illustrative replacement. SVG keeps control of layout and rendering.
+      </p>
+    </div>
+  );
+}
+
+function AssetStrip() {
+  return (
+    <div className="asset-strip">
+      <img
+        src="/assets/icons/svg/svt-mark-64-light.svg"
+        alt="SVT project logo"
+        width="72"
+        height="72"
+      />
+      <img
+        src="/assets/icons/svg/svt-document-64-light.svg"
+        alt="Paper-backed SVT file icon"
+        width="72"
+        height="72"
+      />
+      <img
+        src="/assets/icons/svg/svt-avatar-64-light.svg"
+        alt="SVT project avatar"
+        width="72"
+        height="72"
+      />
+    </div>
+  );
+}
+
+function ProjectLink({
+  href,
+  title,
+  children,
+}: {
+  href: string;
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="link-row">
+      <h3>
+        <a href={href}>{title}</a>
+      </h3>
+      {children}
+    </div>
+  );
+}
+
+export function HomePage() {
+  return (
+    <main id="main" className="wrap">
+      <section className="hero">
+        <div>
+          <PageIntro
+            eyebrow="Scalable Vector Templates"
+            title={
+              <>
+                Your SVG.
+                <br />
+                New possibilities.
+              </>
+            }
+          >
+            Give ordinary SVG named text, paint and image inputs. Keep the artwork you designed, and
+            replace the values that make it yours.
+          </PageIntro>
+          <div className="actions">
+            <a
+              className="button"
+              href="https://github.com/svt-project/svt-spec/tree/v1.0.0-rc.1/spec/README.md"
+            >
+              Read the specification
+            </a>
+            <a href="https://github.com/svt-project/svt-dotnet">Use SVT in .NET →</a>
+            <a href="https://github.com/svt-project/svt-js">Use SVT in JavaScript →</a>
+          </div>
+        </div>
+        <BindingExample />
+      </section>
+      <SplitSection
+        heading={
+          <>
+            <p className="eyebrow">A small layer over SVG</p>
+            <h2>
+              Design once.
+              <br />
+              Make the inputs explicit.
+            </h2>
+          </>
+        }
+      >
+        <p>
+          Annotate the parts of an SVG that can change. An implementation discovers those inputs and
+          their authored defaults, then applies replacement values to an independent SVG document.
+        </p>
+        <p>
+          Text, image references and paint values become addressable inputs. Optional metadata adds
+          labels, descriptions and groups for editing tools. Geometry, fonts, clipping and layout
+          stay with SVG.
+        </p>
+        <p>
+          Templates remain <code>.svg</code> files. Processing does not require fetching a schema or
+          contacting this website.
+        </p>
+      </SplitSection>
+      <SplitSection
+        heading={
+          <>
+            <p className="eyebrow">Explore the project</p>
+            <h2>
+              One format.
+              <br />
+              Independent implementations.
+            </h2>
+          </>
+        }
+      >
+        <div className="links">
+          <ProjectLink
+            href="https://github.com/svt-project/svt-spec/tree/v1.0.0-rc.1/spec/README.md"
+            title="The specification ↗"
+          >
+            <p>
+              Portable contracts and canonical conformance references. Read the published{' '}
+              <a href="https://github.com/svt-project/svt-spec/releases/tag/v1.0.0-rc.1">
+                1.0.0-rc.1 candidate
+              </a>
+              , or follow work in the repository.
+            </p>
+          </ProjectLink>
+          <ProjectLink
+            href="https://github.com/svt-project/svt-dotnet"
+            title=".NET library and CLI ↗"
+          >
+            <p>
+              Inspect templates and bind values in applications or command-line workflows. Get{' '}
+              <a href="https://www.nuget.org/packages/ScalableVectorTemplates">
+                ScalableVectorTemplates
+              </a>{' '}
+              and{' '}
+              <a href="https://www.nuget.org/packages/ScalableVectorTemplates.Cli">
+                ScalableVectorTemplates.Cli
+              </a>{' '}
+              on NuGet.
+            </p>
+          </ProjectLink>
+          <ProjectLink href="https://github.com/svt-project/svt-js" title="JavaScript library ↗">
+            <p>
+              Inspect and bind templates in Node, browsers and Workers, with TypeScript declarations
+              included. The official npm package name is{' '}
+              <strong>
+                <code>@svt-project/svt-js</code>
+              </strong>
+              ; include the scope in dependencies and imports. The unscoped <code>svt-js</code>{' '}
+              package is not this library.
+            </p>
+            <p>
+              Local builds are available from the repository. After npm publication, install with{' '}
+              <code>npm install @svt-project/svt-js</code>.
+            </p>
+          </ProjectLink>
+          <ProjectLink
+            href="https://github.com/svt-project/.github/issues"
+            title="Project roadmap ↗"
+          >
+            <p>Follow specification feedback, implementation improvements and cookbook work.</p>
+          </ProjectLink>
+        </div>
+      </SplitSection>
+      <SplitSection
+        heading={
+          <>
+            <p className="eyebrow">For integrators</p>
+            <h2>
+              A familiar mark
+              <br />
+              for your templates.
+            </h2>
+            <AssetStrip />
+          </>
+        }
+      >
+        <p>
+          Use the SVT logo in your project or give template files a recognizable icon. Download
+          editable SVGs, raster exports and desktop icon formats.
+        </p>
+        <p>
+          The entire icon set is CC0, with no attribution required: logos, avatars, desktop
+          documents and filled file icons.
+        </p>
+        <a className="button" href="/icons/">
+          Get the icon set
+        </a>
+      </SplitSection>
+    </main>
+  );
+}
+
+function SplitSection({ heading, children }: { heading: ReactNode; children: ReactNode }) {
+  return (
+    <section className="section split">
+      <div>{heading}</div>
+      <div>{children}</div>
+    </section>
+  );
+}
