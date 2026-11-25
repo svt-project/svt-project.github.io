@@ -2,14 +2,16 @@
 
 Static project pages for [Scalable Vector Templates](https://svt-project.github.io/).
 
-- `public/index.html`: introduction and links to the specification and .NET implementation.
+- `public/index.html`: introduction and links to the specification, JavaScript and .NET implementations.
 - `public/ns/svt/index.html`: reference page for the stable XML metadata namespace.
 - `public/resources/index.html`: logos and integrator file icons.
-- `public/assets/icons/v2/`: editable SVG masters, raster exports and desktop icon containers.
+- `public/assets/icons/`: optical SVG masters, raster exports and desktop icon containers.
 
 The specification remains self-contained in [svt-spec](https://github.com/svt-project/svt-spec).
 This site links it without copying its authoritative text or fetching it during deployment.
-Cookbook, playground and the independent TypeScript implementation remain follow-ups in the
+The JavaScript implementation lives in [svt-js](https://github.com/svt-project/svt-js), with npm
+identity `@svt-project/svt-js` (publication pending). Include the scope in all installation and import
+examples. Cookbook and playground work remain follow-ups in the
 [coordinator](https://github.com/svt-project/.github/issues).
 
 ## Development and deployment
@@ -29,22 +31,36 @@ URL without a trailing slash may redirect to the HTML directory; its XML identit
 
 ## Artwork and licenses
 
-All SVT marks, avatars, outlined document icons and filled UI icons are dedicated under CC0 1.0,
-with no attribution requirement. See the [asset dedication](public/assets/icons/v2/LICENSE.md) and
-[integration guidance](public/assets/icons/v2/README.md).
+All SVT marks, avatars, desktop document icons and filled UI icons are dedicated under CC0 1.0,
+with no attribution requirement. See the [asset dedication](public/assets/icons/LICENSE.md) and
+[integration guidance](public/assets/icons/README.md).
 
-SVG masters are editable source. Raster exports preserve the same geometry; for example, use resvg
-with `--width 256 --height 256 input.svg output.png`. Small masters cover 16–32 px. Desktop containers
-combine those small exports with the regular artwork. Validate exports before packaging:
+The motif is a landscape picture above angle brackets in a filled silhouette. Dedicated optical drawings
+cover 16, 20, 24, 32, 48 and 64 logical pixels. See the
+[output and acceptance requirements](public/assets/icons/REQUIREMENTS.md) for the complete matrix
+and the distinction between optical size and raster density. The resources page displays actual-size
+1×/2× samples in all four optical treatments on light and dark backgrounds. Padded profile avatars
+retain the 64 px mark on a 96 px canvas for circular crops, with PNG exports through 1024 px.
+
+`public/assets/icons/geometry.json` and `eng/icon_artwork.py` own the original geometry. SVG/PNG
+outputs are committed distribution assets. Regeneration uses Python 3 and **resvg 0.47.0**, supplied
+explicitly by the developer; no renderer is downloaded or run during the site build:
 
 ```sh
+python3 eng/render-icons.py --resvg resvg
 python3 eng/package-icons.py
 python3 eng/check.py
 ```
 
-The script creates deterministic downloads with checksums. Once published, retain a snapshot unchanged;
-use a new asset folder and download version for revisions. The current set is `v2`. Asset numbering is independent of the
-specification and implementation releases. Integrators should embed a downloaded snapshot.
+The normal check runs offline. It verifies source-to-SVG consistency, the full inventory, alignment
+and clearances, decoded PNG cutouts, notches and solid separators at 1×/2×, circular-crop safety, exact desktop-container payloads,
+regression tests, and deterministic archives. It also checks all site/package links. Inspect the
+visual acceptance matrix before accepting artwork: automatic checks cannot establish recognition.
+Repeat regeneration and packaging to confirm there is no further diff.
+
+The package script creates one deterministic `svt-icons.zip` download with checksums. The
+repository maintains a single current artwork set in `public/assets/icons/`; Git history retains
+previous designs. Integrators should embed an accepted copy rather than fetch live artwork at runtime.
 
 Site code and prose are [MIT-licensed](LICENSE), except where the asset-specific licenses apply.
 Bathos is the founding maintainer. Original artwork provenance is retained in the package even

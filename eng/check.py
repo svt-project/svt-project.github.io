@@ -1,11 +1,12 @@
-"""Validate the deployed tree, local links and distributable icon snapshots offline."""
+"""Validate the deployed tree, local links and distributable icon bundle offline."""
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit, unquote
 import hashlib
 import importlib.util
+import unittest
+from icon_checks import check_assets
 import re
-import struct
 import xml.etree.ElementTree as ET
 import zipfile
 
@@ -36,6 +37,7 @@ class Page(HTMLParser):
                 self.links.append(attrs[attribute])
         if tag == 'img':
             require('alt' in attrs, f'{self.path}: image needs alt')
+            self.links.extend(candidate.strip().split()[0] for candidate in attrs.get('srcset', '').split(',') if candidate.strip())
         if tag == 'h1':
             self.headings += 1
         require(tag != 'script', f'{self.path}: initial site must work without scripts')
@@ -73,47 +75,37 @@ for path in ROOT.rglob('*.md'):
     for link in re.findall(r'\]\(([^)]+)\)', content):
         check_link(path, link)
 
-assets = PUBLIC / 'assets/icons/v2'
+assets = PUBLIC / 'assets/icons'
 ns = '{http://www.w3.org/2000/svg}'
+errors.extend(check_assets())
 for path in assets.glob('svg/*.svg'):
     tree = ET.parse(path)
     for element in tree.iter():
-        require(element.tag in {ns + tag for tag in ['svg', 'g', 'rect', 'path', 'title']}, f'{path}: unexpected SVG element')
-        require(not any(k.startswith('on') or 'href' in k or 'url(' in v for k, v in element.attrib.items()), f'{path}: active or external SVG resource')
+        require(element.tag in {ns + tag for tag in ['svg', 'g', 'path', 'title']}, f'{path}: unexpected SVG element')
+        require(not any(k.startswith('on') or 'href' in k or 'url(' in v for k, v in element.attrib.items()),
+                f'{path}: active or external SVG resource')
     if 'file-ui' in path.name:
         paths = tree.findall(ns + 'path')
         require(len(paths) == 1 and paths[0].get('fill-rule') == 'evenodd', f'{path}: lost fill rule')
-for path in assets.glob('png/*/*.png'):
-    data = path.read_bytes()
-    size = int(path.stem)
-    require(data[:8] == b'\x89PNG\r\n\x1a\n' and struct.unpack('>II', data[16:24]) == (size, size), f'{path}: PNG dimensions')
-for path in assets.glob('*.ico'):
-    data = path.read_bytes()
-    require(struct.unpack('<HHH', data[:6]) == (0, 1, 7), f'{path}: ICO header')
-    for i, size in enumerate([16, 24, 32, 48, 64, 128, 256]):
-        w, h, _, _, planes, bits, length, offset = struct.unpack('<BBBBHHII', data[6+i*16:22+i*16])
-        png = data[offset:offset+length]
-        require((w or 256, h or 256, planes, bits) == (size, size, 1, 32), f'{path}: ICO entry')
-        require(png[:8] == b'\x89PNG\r\n\x1a\n' and struct.unpack('>II', png[16:24]) == (size, size), f'{path}: ICO image')
-for path in assets.glob('*.icns'):
-    data = path.read_bytes()
-    require(data[:4] == b'icns' and struct.unpack('>I', data[4:8])[0] == len(data), f'{path}: ICNS header')
 
 spec = importlib.util.spec_from_file_location('package_icons', ROOT / 'eng/package-icons.py')
 package = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(package)
-path = PUBLIC / 'assets/downloads' / package.ARCHIVE_NAME
-require(path.read_bytes() == package.archive_bytes(), 'Stale archive; run eng/package-icons.py')
+path = package.DOWNLOADS / package.ARCHIVE_NAME
+require(path.read_bytes() == package.archive_bytes(), 'Stale icon archive; run eng/package-icons.py')
 with zipfile.ZipFile(path) as archive:
     require(archive.testzip() is None, 'Corrupt ZIP')
     require(package.ARCHIVE_ROOT + 'CC0-1.0.txt' in archive.namelist(), 'CC0 dedication missing')
     for line in archive.read(package.ARCHIVE_ROOT + 'SHA256SUMS').decode().splitlines():
         digest, filename = line.split('  ', 1)
         require(hashlib.sha256(archive.read(package.ARCHIVE_ROOT + filename)).hexdigest() == digest, 'Bad asset digest')
-for line in (PUBLIC / 'assets/downloads/SHA256SUMS').read_text().splitlines():
-    digest, name = line.split('  ', 1)
-    require(hashlib.sha256((PUBLIC / 'assets/downloads' / name).read_bytes()).hexdigest() == digest, 'Bad archive checksum')
+require({p.name for p in package.DOWNLOADS.iterdir()} == {package.ARCHIVE_NAME, 'SHA256SUMS'},
+        'Downloads must contain exactly one current bundle and its checksum')
+checksum = f'{hashlib.sha256(path.read_bytes()).hexdigest()}  {package.ARCHIVE_NAME}\n'
+require((package.DOWNLOADS / 'SHA256SUMS').read_text() == checksum, 'Bad archive checksum')
+result = unittest.TextTestRunner().run(unittest.defaultTestLoader.discover(str(ROOT / 'eng'), pattern='test_*.py'))
+require(result.wasSuccessful(), 'Icon acceptance regression tests failed')
 require('https://svt-project.github.io/ns/svt' in (PUBLIC / 'ns/svt/index.html').read_text(), 'Namespace missing')
 if errors:
     raise SystemExit('\n'.join(errors))
-print(f'Passed: {len(pages)} pages, local HTML/Markdown links, SVG safety, PNG/ICO/ICNS structure, CC0 package and reproducible archive.')
+print(f'Passed: {len(pages)} pages, links, optical/raster acceptance, circle-safe avatars, desktop containers and one reproducible CC0 bundle.')

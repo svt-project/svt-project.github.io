@@ -11,8 +11,9 @@
 - Cookbook, playground and TypeScript implementation are separate follow-ups tracked in `.github`.
 - All project branding artwork and icon-package documentation are CC0. Use original geometry;
   keep provider-specific adaptations in consuming applications. Site code and other prose are MIT.
-- Released asset folders are snapshots. Publish a new folder/download when updating artwork;
-  do not silently replace an established download. Keep the license boundaries explicit.
+- Maintain one current artwork set in `public/assets/icons/` and one `svt-icons.zip` download.
+  Git history retains earlier designs; do not keep numbered prerelease asset copies or redirects.
+  Keep the CC0 artwork and MIT site-code license boundaries explicit.
 - Run `python3 eng/check.py` before committing; inspect responsive pages when changing layout.
   Regenerate downloads with `python3 eng/package-icons.py` after intentional asset changes.
 - Keep paths, IDE metadata, credentials, private consumers and generated QA evidence out of commits.
