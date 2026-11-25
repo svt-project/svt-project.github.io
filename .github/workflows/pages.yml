@@ -14,9 +14,12 @@ jobs:
     permissions:
       contents: read
       pages: read
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
       - name: Validate pages and icon packages
         run: python3 eng/check.py
       - name: Configure Pages
@@ -30,6 +33,7 @@ jobs:
   deploy:
     if: github.event_name != 'pull_request'
     needs: validate
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     permissions:
       pages: write

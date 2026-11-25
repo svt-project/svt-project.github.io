@@ -64,5 +64,5 @@ repository maintains a single current artwork set in `public/assets/icons/`; Git
 previous designs. Integrators should embed an accepted copy rather than fetch live artwork at runtime.
 
 Site code and prose are [MIT-licensed](LICENSE), except where the asset-specific licenses apply.
-Bathos is the founding maintainer. Original artwork provenance is retained in the package even
+Bathos Pty Ltd is the founding maintainer. Original artwork provenance is retained in the package even
 though CC0 does not require credit when using the logos.

@@ -7,7 +7,7 @@ This includes every SVG master, PNG export, Windows ICO and macOS ICNS file: pro
 desktop document icons and filled UI file icons, in all supplied sizes and colors.
 
 You may use, copy, modify and redistribute these assets, including commercially, without
-attribution. The provenance credit to Bathos is informational, not an attribution condition. CC0
+attribution. The provenance credit to Bathos Pty Ltd is informational. CC0
 does not affect trademark or patent rights. Using the artwork does not imply project endorsement or
 conformance certification. See the full legal text above and the
 [CC0 deed](https://creativecommons.org/publicdomain/zero/1.0/).
