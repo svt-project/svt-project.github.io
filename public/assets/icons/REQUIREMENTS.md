@@ -112,5 +112,5 @@ Before accepting artwork, review the four optical treatments at **16, 20, 24, 32
 Review padded avatars as square and circular images on light and dark surfaces. The mark must
 remain intact, with a visible background margin around it.
 
-The resources page shows actual-size 1×/2× samples for integrators. Detailed review sheets and
+The icons page shows actual-size 1×/2× samples for integrators. Detailed review sheets and
 screenshots belong in ignored local evidence, not in the downloadable package.

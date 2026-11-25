@@ -4,7 +4,7 @@ Static project pages for [Scalable Vector Templates](https://svt-project.github.
 
 - `public/index.html`: introduction and links to the specification, JavaScript and .NET implementations.
 - `public/ns/svt/index.html`: reference page for the stable XML metadata namespace.
-- `public/resources/index.html`: logos and integrator file icons.
+- `public/icons/index.html`: logos and integrator file icons.
 - `public/assets/icons/`: optical SVG masters, raster exports and desktop icon containers.
 
 The specification remains self-contained in [svt-spec](https://github.com/svt-project/svt-spec).
@@ -39,7 +39,7 @@ The motif is a landscape picture above angle brackets. Application and file icon
 filled silhouette; avatars use an ink picture and jade/mint brackets without an outer frame. Dedicated optical drawings
 cover 16, 20, 24, 32, 48 and 64 logical pixels. See the
 [output and acceptance requirements](public/assets/icons/REQUIREMENTS.md) for the complete matrix
-and the distinction between optical size and raster density. The resources page displays actual-size
+and the distinction between optical size and raster density. The icons page displays actual-size
 1×/2× samples in all four optical treatments on light and dark backgrounds. Padded profile avatars
 retain the 64 px colored avatar on a 96 px canvas for circular crops, with PNG exports through 1024 px.
 
