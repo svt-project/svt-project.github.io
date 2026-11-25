@@ -8,7 +8,7 @@
   slash. HTTP redirects to the reference page do not change namespace identity.
 - Link authoritative specification prose and canonical assets in `svt-spec`; do not copy them
   or fetch them during builds. The specification stays self-contained and does not depend on this site.
-- Cookbook, playground and TypeScript implementation are separate follow-ups tracked in `.github`.
+- Link the JavaScript implementation in `svt-js`. Cookbook and playground work is tracked in `.github`.
 - All project branding artwork and icon-package documentation are CC0. Use original geometry;
   keep provider-specific adaptations in consuming applications. Site code and other prose are MIT.
 - Maintain one current artwork set in `public/assets/icons/` and one `svt-icons.zip` download.
