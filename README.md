@@ -38,14 +38,11 @@ URL without a trailing slash may redirect to the HTML directory; its XML identit
 
 ## Authoring Guide
 
-The deployed site uses `@svt-project/svt-js@1.0.0-rc.2`. This feature branch previews the
-[authored-value interpreters](https://github.com/svt-project/svt-js/pull/19). To reproduce the preview,
-run `npm ci --ignore-scripts` and `npm pack` in that library checkout and copy the resulting tarball
-into the site checkout as `.local/svt-js-interpretation-preview.tgz`. From the site checkout:
+The cookbook uses the published `@svt-project/svt-js@1.0.0-rc.3` package. To preview it locally, run
+these commands from the site checkout.
 
 ```sh
-npm ci
-npm install --ignore-scripts --no-save --package-lock=false ./.local/svt-js-interpretation-preview.tgz
+npm ci --ignore-scripts
 npm run build:cookbook
 npm run preview:cookbook
 ```

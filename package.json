@@ -26,7 +26,7 @@
     "@lezer/common": "1.5.7",
     "@lezer/highlight": "1.2.5",
     "@lezer/xml": "1.0.6",
-    "@svt-project/svt-js": "1.0.0-rc.2",
+    "@svt-project/svt-js": "1.0.0-rc.3",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "react-icons": "5.7.0"
