@@ -106,7 +106,7 @@ export const groups: readonly RecipeGroup[] = [
         alt: 'A triangular harbor pennant flying from a dark mast.',
         note: '`data-svt-fill` makes the pennant’s color editable.',
         lesson:
-          'The pennant’s `<path>` supplies its original color through `fill`. SVT writes the chosen color to that attribute when it binds the `pennant` input.',
+          'The picker reads the authored `rgb(206 99 71)` color. The template keeps that spelling until a replacement is bound to `pennant`, which updates the path’s `fill` attribute.',
         excerpt: [{ attribute: 'data-svt-fill' }],
       },
       {

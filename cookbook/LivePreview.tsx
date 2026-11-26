@@ -1,6 +1,5 @@
-import type { InputGroup } from '@svt-project/svt-js';
 import type { Exercise } from './guide-model.ts';
-import type { PreviewRequest, PreviewResponse, PreviewValues } from './preview-messages.ts';
+import type { ControlGroup, PreviewRequest, PreviewResponse, PreviewValues } from './preview-messages.ts';
 import { useEffect, useRef, useState } from 'react';
 import { TemplateEditor } from './TemplateEditor.tsx';
 import { PreviewImage } from './PreviewImage.tsx';
@@ -13,12 +12,11 @@ export function LivePreview({
   exercise: Exercise;
   worker: Worker | null;
 }) {
-  const [groups, setGroups] = useState<readonly InputGroup[] | null>(null);
+  const [groups, setGroups] = useState<readonly ControlGroup[] | null>(null);
   const [values, setValues] = useState<PreviewValues>({});
   const [url, setUrl] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [editorOpen, setEditorOpen] = useState(false);
-  const [customSource, setCustomSource] = useState(false);
   const [inspectAttempt, setInspectAttempt] = useState(0);
   const [canRetry, setCanRetry] = useState(false);
   const [awaitingGroups, setAwaitingGroups] = useState(false);
@@ -39,7 +37,6 @@ export function LivePreview({
       if (data.kind === 'groups') {
         setGroups(data.groups);
         setValues(data.values);
-        setCustomSource(hasDraft.current);
         setAwaitingGroups(false);
       }
       if (data.kind === 'svg') {
@@ -108,7 +105,6 @@ export function LivePreview({
           groups={groups}
           awaitingGroups={awaitingGroups}
           values={values}
-          customSource={customSource}
           submit={(next) => {
             setValues(next);
             worker?.postMessage({

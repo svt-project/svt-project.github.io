@@ -1,4 +1,5 @@
 import { inspect, type Binding, type Result, type Template } from '@svt-project/svt-js';
+import { controlGroups } from './authored-controls.ts';
 import type { PreviewRequest, PreviewResponse } from './preview-messages.ts';
 
 const templates = new Map<string, Promise<Template>>();
@@ -52,7 +53,7 @@ self.onmessage = async ({ data }: MessageEvent<PreviewRequest>) => {
         kind: 'groups',
         id,
         revision,
-        groups: template.groups,
+        groups: controlGroups(template.groups),
         values: Object.fromEntries(overrides.map(({ key, override }) => [key, override])),
       });
     }
