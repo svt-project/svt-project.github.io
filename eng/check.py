@@ -68,7 +68,7 @@ for path, page in pages.items():
     for link in page.links:
         check_link(path, link, True)
 for path in ROOT.rglob('*.md'):
-    if any(part in {'.git', '.local'} for part in path.parts):
+    if any(part in {'.git', '.local', 'node_modules'} for part in path.parts):
         continue
     content = path.read_text()
     require(not any(line.rstrip() != line for line in content.splitlines()), f'{path}: trailing whitespace')

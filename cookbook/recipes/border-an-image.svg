@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" data-svt-version="1.0" viewBox="0 0 720 280">
+  <defs>
+    <rect id="frame" x="158" y="30" width="404" height="220" rx="16"/>
+    <clipPath id="window"><use href="#frame"/></clipPath>
+  </defs>
+  <rect width="720" height="280" fill="#f3ecda"/>
+  <image x="158" y="30" width="404" height="220" href="../artwork/headland.png" preserveAspectRatio="xMidYMid slice" clip-path="url(#window)" data-svt-image="print" data-svt-label="Coastal print"/>
+  <use href="#frame" fill="none" stroke="#286258" stroke-width="10" data-svt-stroke="border" data-svt-label="Border color"/>
+</svg>

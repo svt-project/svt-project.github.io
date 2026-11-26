@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" data-svt-version="1.0" viewBox="0 0 720 280">
+  <defs>
+    <linearGradient id="fade">
+      <stop offset="28%" stop-color="white" stop-opacity="0"/>
+      <stop offset="76%" stop-color="white" stop-opacity="1"/>
+    </linearGradient>
+    <mask id="reveal"><rect width="720" height="280" fill="url(#fade)"/></mask>
+  </defs>
+  <rect width="720" height="280" fill="#f8f0db"/>
+  <image width="720" height="280" href="../artwork/headland.png" preserveAspectRatio="xMidYMid slice" mask="url(#reveal)" data-svt-image="view" data-svt-label="Coastal view"/>
+  <g fill="#264e49">
+    <text x="42" y="80" font-family="sans-serif" font-size="14" letter-spacing="3">FIELD NOTES</text>
+    <text x="40" y="150" font-family="Georgia,serif" font-size="44">Coastal light</text>
+    <path d="M42 174h74" stroke="#a65336" stroke-width="3"/>
+  </g>
+</svg>

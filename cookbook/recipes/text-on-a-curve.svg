@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" data-svt-version="1.0" viewBox="0 0 720 280">
+  <defs>
+    <path id="lettering" d="M90 188 Q360 -60 630 188"/>
+  </defs>
+  <rect width="720" height="280" fill="#f3ecd9"/>
+  <g fill="none" stroke="#436b62">
+    <rect x="18" y="16" width="684" height="248" rx="8"/>
+    <path d="M56 181h99m410 0h99" stroke-width="2"/>
+    <circle cx="360" cy="166" r="51" stroke-width="2"/>
+  </g>
+  <g fill="#285950">
+    <text font-family="Georgia,serif" font-size="36" text-anchor="middle"><textPath href="#lettering" startOffset="50%"><tspan data-svt-text="port" data-svt-label="Port name">Port Meridian</tspan></textPath></text>
+    <path d="M331 177h60l-11 12h-39zM357 132v40h-25zM363 137l21 35h-21z"/>
+  </g>
+  <text x="360" y="243" text-anchor="middle" font-family="sans-serif" font-size="12" letter-spacing="4" fill="#436b62">PORT AUTHORITY</text>
+</svg>

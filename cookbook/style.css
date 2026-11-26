@@ -1,0 +1,101 @@
+.layout { display: grid; grid-template-columns: 215px minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); }
+aside { align-self: start; position: sticky; top: 0; max-height: 100vh; overflow: auto; padding: 36px 0; }
+aside summary { font-weight: 650; cursor: pointer; }
+aside nav { display: block; padding: 18px 0 0 14px; border-left: 1px solid var(--line); }
+aside ul { list-style: none; padding: 0; margin: 6px 0 18px; }
+aside li { line-height: 1.4; }
+aside a { display: block; padding: 4px 0; text-decoration: none; }
+aside li a { color: var(--muted); font-size: .84rem; }
+aside a:hover, aside a[aria-current] { color: var(--jade); text-decoration: underline; }
+.group-link { font-weight: 650; }
+main { min-width: 0; padding: 36px 0; }
+h1 { font-size: clamp(2.6rem, 5vw, 4.1rem); }
+h2 { border-top: 1px solid var(--line); padding-top: 24px; color: var(--jade); }
+h2, h3 { scroll-margin-top: 16px; }
+h3 { font-size: clamp(1.45rem, 3vw, 2rem); }
+article { padding: 12px 0 42px; }
+article > p { max-width: 68ch; }
+article > p code { padding: .08em .3em; border-radius: 3px; background: #e5ebe3; }
+.bench, .source { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: white; }
+.preview-image { display: grid; place-items: center; overflow: hidden; isolation: isolate; }
+.preview-image > * { grid-area: 1 / 1; }
+.specimen { display: block; width: 100%; aspect-ratio: 18 / 7; transition: filter 160ms ease-out; }
+.preview-image[data-invalid] .specimen { height: 100%; object-fit: cover; filter: blur(4px); }
+.preview-notice { z-index: 1; min-width: 0; max-width: min(40ch, 100%); padding: 12px; }
+.preview-image[data-invalid] .preview-notice { margin: 8px; border: 1px solid #b96750; border-radius: 6px; background: #fff9f5; color: #732e22; }
+.preview-notice .status { margin: 0; font-size: .9rem; line-height: 1.4; overflow-wrap: anywhere; }
+.preview-notice button { margin-top: 8px; cursor: pointer; }
+.preview-image:not([data-invalid]) .preview-notice { padding: 0; }
+@media (prefers-reduced-motion: reduce) { .specimen { transition: none; } }
+form, .source > div { display: flex; align-items: end; gap: 16px; padding: 15px 18px; flex-wrap: wrap; }
+form[inert] { opacity: .65; }
+form[hidden] { display: none; }
+form .binding-field { display: grid; gap: 5px; min-width: 0; max-width: 100%; }
+form label { font-weight: 600; font-size: .85rem; }
+form fieldset { width: 100%; min-width: 0; margin: 0; border: 1px solid var(--line); border-radius: 4px; padding: 12px; }
+form legend { padding: 0 6px; font-weight: 650; }
+.group-fields { display: flex; align-items: start; flex-wrap: wrap; gap: 12px 18px; }
+.field-help { max-width: 44ch; margin: 0; font-size: .84rem; font-weight: normal; color: var(--muted); white-space: pre-line; }
+fieldset > .field-help { margin-bottom: 12px; }
+input, select, button { font: inherit; color: inherit; }
+input, select, form button { border: 1px solid #a9b9ac; background: white; border-radius: 4px; min-height: 40px; padding: 5px 10px; max-width: 100%; }
+input[type=color] { width: 6rem; }
+.form-actions { display: flex; align-items: center; gap: 8px; margin-inline-start: auto; }
+.form-actions button { cursor: pointer; }
+.reset-values { display: inline-grid; place-items: center; width: 44px; height: 44px; color: var(--jade); }
+.reset-values:hover, .reset-values:focus-visible { background: #eaf0e9; }
+.lesson { margin: 17px 0; }
+.source > div { align-items: center; justify-content: space-between; font-size: .85rem; padding: 12px 18px; }
+pre { background: #eaf0e9; padding: 16px 18px; }
+.copy { display: inline-flex; align-items: center; vertical-align: middle; margin-inline-start: 4px; min-height: 36px; min-width: 36px; justify-content: center; background: transparent; color: var(--jade); border: 0; cursor: pointer; font-size: 1rem; padding: 8px; opacity: 0; }
+.copy span:not(:empty) { margin-inline-start: 6px; }
+:is(h2,h3):hover .copy, .copy:focus-visible { opacity: 1; }
+@media (hover: none) { .copy { opacity: 1; } }
+@media (max-width: 740px) {
+  .layout { display: block; }
+  aside { top: 0; z-index: 1; background: var(--paper); max-height: 75vh; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  h2, h3 { scroll-margin-top: 60px; }
+  main { padding: 24px 0; }
+  form { gap: 10px; }
+  form label { max-width: 100%; }
+  .form-actions { margin-inline-start: 0; }
+}
+
+@media (max-width: 740px) and (scripting: none) {
+  aside { position: static; }
+}
+
+.source pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.source [data-source-layout]::before { content: attr(data-source-layout); white-space: pre; }
+.source .source-outer-indent { font-size: 0; }
+.source code { overflow-wrap: inherit; }
+
+.tok-typeName { color: #294d78; }
+.tok-propertyName { color: #74522d; }
+.tok-string { color: #315f4a; }
+.tok-comment { color: #596760; font-style: italic; }
+.tok-punctuation, .tok-operator { color: #566561; }
+.svt-name, .svt-name [class] { color: #802c59; font-weight: 700; }
+.template-editor { border-top: 1px solid var(--line); }
+.editor-tools { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 18px; color: var(--ink); font-size: .85rem; }
+.template-editor button { padding: 6px 10px; border-radius: 4px; border: 1px solid var(--line); background: white; cursor: pointer; }
+.template-editor p { margin: 8px 18px; }
+.cm-editor { background: #f6f8f4; font-size: .85rem; }
+.cm-editor .cm-scroller { max-height: min(50vh, 26rem); overflow: auto; }
+.cm-editor.cm-focused { outline: 2px solid var(--jade); outline-offset: -2px; }
+
+article { container-type: inline-size; }
+@media (orientation: landscape) {
+  @container (min-width: 30rem) {
+    .bench:has(.template-editor) {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      grid-template-rows: auto 1fr;
+      grid-template-areas: "editor preview" "editor controls";
+      reading-flow: grid-columns;
+    }
+    .bench:has(.template-editor) .preview-image { grid-area: preview; }
+    .bench:has(.template-editor) form { grid-area: controls; align-self: start; }
+    .template-editor { grid-area: editor; border-top: 0; border-inline-end: 1px solid var(--line); }
+  }
+}

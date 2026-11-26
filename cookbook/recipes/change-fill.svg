@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" data-svt-version="1.0" viewBox="0 0 720 280">
+  <rect width="720" height="280" fill="#ebefdf"/>
+  <path d="M258 60V239" stroke="#284c49" stroke-width="8" stroke-linecap="round"/>
+  <path d="M262 64L500 106L262 158Z" fill="#ce6347" data-svt-fill="pennant"/>
+  <circle cx="258" cy="54" r="8" fill="#284c49"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" data-svt-version="1.0" viewBox="0 0 720 280" font-family="sans-serif">
+  <style>.signal { fill: #bb5637; }</style>
+  <rect width="720" height="280" fill="#f1ecdb"/>
+  <g stroke="#343f38" stroke-width="3">
+    <circle cx="220" cy="115" r="62" fill="#bb5637" data-svt-fill="paint"/>
+    <circle cx="500" cy="115" r="62" class="signal" fill="#bb5637" data-svt-fill="paint"/>
+  </g>
+  <g fill="#324940" font-size="18" text-anchor="middle"><text x="220" y="222">Presentation attribute</text><text x="500" y="222">Class rule</text></g>
+</svg>

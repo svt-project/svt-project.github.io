@@ -1,9 +1,10 @@
 # Agent guidance
 
 - Use American English. Work serially; request approval before delegating.
+- Write site and cookbook components in strict TypeScript (TSX) and their supporting code and Node build scripts in TypeScript.
 - Check Git status before editing. Default branch: `master`.
-- This repository owns the project landing page, `/ns/svt` reference page, optional branding
-  assets and future cookbook content. Keep the initial site static and useful without JavaScript.
+- This repository owns the project landing page, `/ns/svt` reference page, branding
+  assets and the Authoring Guide. Keep the site static and useful without JavaScript.
 - The namespace identifier is exactly `https://svt-project.github.io/ns/svt`, without a trailing
   slash. HTTP redirects to the reference page do not change namespace identity.
 - Link authoritative specification prose and canonical assets in `svt-spec`; do not copy them

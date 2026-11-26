@@ -20,8 +20,20 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Verify generated public pages
+        run: |
+          npm ci --ignore-scripts
+          npm run build:pages
+          git diff --exit-code -- public
       - name: Validate pages and icon packages
         run: python3 eng/check.py
+      - name: Build and test the complete site
+        run: |
+          npx --no-install playwright install --with-deps chromium --only-shell
+          npm run test:cookbook
       - name: Configure Pages
         if: github.event_name != 'pull_request'
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
@@ -29,7 +41,7 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
-          path: public
+          path: .local/site
   deploy:
     if: github.event_name != 'pull_request'
     needs: validate

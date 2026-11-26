@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" data-svt-version="1.0" viewBox="0 0 720 280" font-family="sans-serif">
+  <rect width="720" height="280" fill="#e3e8da"/>
+  <path d="M96 32h200v174H96zM424 32h200v174H424z" fill="#fff9e9"/>
+  <image x="96" y="32" width="200" height="174" preserveAspectRatio="xMidYMid meet" data-svt-image="artwork" data-svt-label="Illustration" href="../artwork/headland.png"/>
+  <image x="424" y="32" width="200" height="174" preserveAspectRatio="xMidYMid slice" data-svt-image="artwork" data-svt-label="Illustration" href="../artwork/headland.png"/>
+  <g text-anchor="middle" fill="#254b42" font-size="18"><text x="196" y="244">Contain</text><text x="524" y="244">Crop</text></g>
+</svg>
