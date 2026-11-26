@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { FiExternalLink } from 'react-icons/fi';
 
 interface NavigationProps {
   path: string;
@@ -13,12 +14,14 @@ export interface PageMetadata {
   head?: ReactNode;
 }
 
+const siteOrigin = 'https://svt-project.github.io';
 const specification = 'https://github.com/svt-project/svt-spec/tree/v1.0.0-rc.1/spec/README.md';
 const menu = [
-  { href: specification, label: 'Specification' },
+  { href: '/', label: 'Home' },
   { href: '/cookbook/', label: 'Authoring Guide' },
   { href: '/icons/', label: 'Icons' },
   { href: '/ns/svt/', label: 'Namespace' },
+  { href: specification, label: 'Specification' },
   { href: 'https://github.com/svt-project', label: 'GitHub' },
 ];
 
@@ -31,15 +34,27 @@ function BrandLink({ current }: { current: boolean }) {
   );
 }
 
+function MenuLink({ href, label, current }: { href: string; label: string; current: boolean }) {
+  const external = new URL(href, siteOrigin).origin !== siteOrigin;
+  return (
+    <a
+      href={href}
+      aria-current={current ? 'page' : undefined}
+      rel={external ? 'external' : undefined}
+    >
+      {label}
+      {external && <FiExternalLink aria-label="External link" role="img" focusable="false" />}
+    </a>
+  );
+}
+
 function SiteMenu({ path, includeGuide }: NavigationProps) {
   return (
     <nav aria-label="Main navigation">
       {menu
         .filter((link) => includeGuide || link.href !== '/cookbook/')
         .map(({ href, label }) => (
-          <a key={href} href={href} aria-current={href === path ? 'page' : undefined}>
-            {label}
-          </a>
+          <MenuLink key={href} href={href} label={label} current={href === path} />
         ))}
     </nav>
   );
@@ -86,7 +101,7 @@ export function SiteLayout({
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>{title}</title>
         <meta name="description" content={description} />
-        <link rel="canonical" href={'https://svt-project.github.io' + canonical} />
+        <link rel="canonical" href={siteOrigin + canonical} />
         <link rel="icon" type="image/svg+xml" href="/assets/icons/svg/svt-avatar-32-light.svg" />
         <link rel="stylesheet" href="/styles.css" />
         {head}

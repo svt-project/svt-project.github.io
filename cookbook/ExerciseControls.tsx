@@ -29,14 +29,15 @@ function BindingField({
       : input.label;
   let field;
   if (input.kind === 'image') {
+    const showAuthored = customSource || input.default.state !== 'common';
     field = (
       <select
         id={fieldId}
         aria-describedby={helpId}
-        value={value ?? (customSource ? '' : 'headland')}
+        value={value ?? (showAuthored ? '' : 'headland')}
         onChange={(e) => onChange(e.target.value || undefined)}
       >
-        {customSource && <option value="">Template artwork</option>}
+        {showAuthored && <option value="">Template artwork</option>}
         <option value="headland">Headland · landscape</option>
         <option value="beacon">Beacon · portrait</option>
       </select>
@@ -72,6 +73,11 @@ function BindingField({
           (value === undefined || hexColor.test(value))
             ? 'color'
             : 'text'
+        }
+        placeholder={
+          input.default.state === 'mixed' && value === undefined
+            ? 'Multiple template values'
+            : undefined
         }
         value={value ?? input.default.raw ?? ''}
         onChange={(e) => onChange(e.target.value)}
@@ -119,7 +125,7 @@ export function ExerciseControls({
   children,
   title,
   groups,
-  linkedImages,
+  awaitingGroups,
   customSource,
   values,
   submit,
@@ -127,21 +133,20 @@ export function ExerciseControls({
   children?: ReactNode;
   title: string;
   groups: readonly InputGroup[];
-  linkedImages: readonly string[];
+  awaitingGroups: boolean;
   customSource: boolean;
   values: PreviewValues;
   submit: (values: PreviewValues) => void;
 }) {
   function change(input: TemplateInput, value: string | undefined) {
     const next = new Map(Object.entries(values));
-    for (const key of linkedImages.includes(input.key) ? linkedImages : [input.key]) {
-      if (value === undefined) next.delete(key);
-      else next.set(key, { kind: input.kind, value });
-    }
+    if (value === undefined) next.delete(input.key);
+    else next.set(input.key, { kind: input.kind, value });
     submit(Object.fromEntries(next));
   }
   return (
     <form
+      inert={awaitingGroups}
       aria-label={title + ' controls'}
       onSubmit={(e) => e.preventDefault()}
       onReset={(e) => {
@@ -151,17 +156,15 @@ export function ExerciseControls({
     >
       {groups.map((group) => (
         <FormGroup group={group} key={group.key ?? ''}>
-          {group.inputs
-            .filter((input) => !linkedImages.includes(input.key) || input.key === linkedImages[0])
-            .map((input) => (
-              <BindingField
-                key={input.key}
-                input={input}
-                customSource={customSource}
-                value={values[input.key]?.value}
-                onChange={(value) => change(input, value)}
-              />
-            ))}
+          {group.inputs.map((input) => (
+            <BindingField
+              key={input.key}
+              input={input}
+              customSource={customSource}
+              value={values[input.key]?.value}
+              onChange={(value) => change(input, value)}
+            />
+          ))}
         </FormGroup>
       ))}
       <div className="form-actions">

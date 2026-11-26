@@ -59,17 +59,27 @@ every template, embeds its default artwork for standalone downloads, and bundles
 browser Worker. The readable excerpts and preview come from the same recipe. With JavaScript
 disabled, the descriptions, authored artwork, navigation, excerpts, and downloads still work.
 
-Lezer highlights the excerpts during the build. The zoom crop and grouped metadata exercises
-also load a CodeMirror XML editor when opened. Edits run through the linked library in the
-Worker and last until the page is refreshed. Run `npm run test:cookbook` to check namespace
-highlighting and verify that formatting preserves each recipe’s SVG.
+Lezer highlights the excerpts during the build. Each exercise loads the shared CodeMirror XML editor
+when you select **Edit full template**. Edits run through the linked library in the
+Worker and last until the page is refreshed. Excerpts select whole XML elements by tag,
+attribute, or child element, so wrapping an opening tag across lines preserves the example.
+
+With the library linked, install the test browser once and run the cookbook checks:
+
+```sh
+npx playwright install chromium --only-shell
+npm run test:cookbook
+```
+
+The checks build a fresh preview, verify XML formatting and highlighting, and launch a
+temporary local server for Chromium to exercise bindings, recovery, editors, and mobile navigation.
 
 The image controls use 3× PNG exports of the SVG masters in `cookbook/artwork/`.
 The PNGs give the outer SVG frame a raster image with a fixed aspect ratio for crop and fade exercises.
 
-The local trial started with svt-js commit
-[`e0a39ce`](https://github.com/svt-project/svt-js/commit/e0a39ce2c918bc2c722e0eb84cd4a26ddffc4ded)
-and its [accepted specification snapshot](https://github.com/svt-project/svt-spec/tree/21e677727545dc3d9fe30511fbddc93ca023851e).
+The fit-or-crop and ticket examples require a linked library that supports repeated image
+and text keys from the working SVT 1.0.0-rc.2 specification. Both examples use a single
+form field to update multiple targets.
 These exercises test authoring and browser behavior. Font metrics and glyph coverage depend on
 installed fonts. Before deploying the guide, pin the published 1.0 package and lockfile, build
 the guide in Pages CI, and upload the built site tree.

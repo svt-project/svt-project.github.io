@@ -18,7 +18,11 @@ test('excerpt names use the enclosing XML namespaces, including local prefix cha
     <text data-svt-text="a">A</text>
     <text xmlns="urn:other" data-svt-text="foreign">B</text>
   </svg>`;
-  const { snippet } = prepareSource(source, ['m:input', 'm:group', 'data-svt-text'], imagePath);
+  const { snippet } = prepareSource(
+    source,
+    ['m:inputs', { attribute: 'data-svt-text' }],
+    imagePath,
+  );
   assert.deepEqual(
     snippet.filter(([, style]) => style === 'svt-name').map(([text]) => text),
     [
@@ -44,12 +48,12 @@ function serialize(source: string) {
 
 test('formatting preserves every recipe’s SVG, including whitespace between text spans', async () => {
   for (const { exercises } of groups) {
-    for (const { id, lines } of exercises) {
+    for (const { id, excerpt } of exercises) {
       const authored = await readFile(
         new URL(`../cookbook/recipes/${id}.svg`, import.meta.url),
         'utf8',
       );
-      const { formatted } = prepareSource(authored, lines, imagePath);
+      const { formatted } = prepareSource(authored, excerpt, imagePath);
       assert.equal(serialize(formatted), serialize(authored), id);
     }
   }
@@ -61,7 +65,11 @@ test('adjacent text spans get separate indented display lines and retain their c
   const unit = '<tspan dx="9" font-size="30">m</tspan>';
   const compact = parent + depth + unit + '</text>';
   const source = '<svg xmlns="http://www.w3.org/2000/svg">\n  ' + compact + '\n</svg>';
-  const { snippet, formatted } = prepareSource(source, ['data-svt-text'], imagePath);
+  const { snippet, formatted } = prepareSource(
+    source,
+    [{ element: 'text', child: 'tspan' }],
+    imagePath,
+  );
   assert.equal(
     snippet.map(([text, layout]) => text ?? layout).join(''),
     [parent, '  ' + depth, '  ' + unit, '</text>'].join('\n'),
@@ -76,7 +84,7 @@ test('attributes on a long nested tag indent one level beyond their owning eleme
     '<svg>\n  <defs><clipPath id="clip"><path id="outline" d="' +
     path +
     '"/></clipPath></defs>\n</svg>';
-  const { snippet } = prepareSource(source, ['id="outline"'], imagePath);
+  const { snippet } = prepareSource(source, ['defs'], imagePath);
   assert.equal(
     snippet.map(([text, layout]) => text ?? layout).join(''),
     [
@@ -89,4 +97,24 @@ test('attributes on a long nested tag indent one level beyond their owning eleme
       '</defs>',
     ].join('\n'),
   );
+});
+
+test('moving attributes across lines selects the same complete elements in document order', () => {
+  const svg =
+    '<svg><text>unrelated</text><!-- data-svt-text -->' +
+    '<text><tspan data-svt-text="depth">2.4</tspan><tspan>m</tspan></text>' +
+    '<text data-svt-text="port">Harbor</text></svg>';
+  const selectors = [{ element: 'text', child: 'tspan' }, { attribute: 'data-svt-text' }];
+  const { snippet } = prepareSource(svg, selectors, imagePath);
+  assert.equal(
+    snippet.map(([text]) => text).join(''),
+    '<text><tspan data-svt-text="depth">2.4</tspan><tspan>m</tspan></text>\n' +
+      '<text data-svt-text="port">Harbor</text>',
+  );
+  assert.deepEqual(
+    prepareSource(svg.replaceAll(' data-svt-text', '\n    data-svt-text'), selectors, imagePath)
+      .snippet,
+    snippet,
+  );
+  assert.throws(() => prepareSource(svg, ['text', 'absent'], imagePath), /absent/);
 });

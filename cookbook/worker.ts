@@ -2,6 +2,7 @@ import { inspect, type Binding, type Result, type Template } from '@svt-project/
 import type { PreviewRequest, PreviewResponse } from './preview-messages.ts';
 
 const templates = new Map<string, Promise<Template>>();
+const drafts = new Map<string, Template>();
 const artwork = new Map<string, Promise<Uint8Array>>();
 
 async function read(path: string) {
@@ -32,51 +33,58 @@ function reply(response: PreviewResponse) {
 
 self.onmessage = async ({ data }: MessageEvent<PreviewRequest>) => {
   const { id } = data;
+  const revision = data.kind === 'inspect' ? 0 : data.revision;
   try {
-    const source = data.kind === 'edit' ? data.source : null;
-    const template =
-      source !== null
-        ? unwrap(inspect(source))
-        : await load(templates, id, async () => unwrap(inspect(await read(`recipes/${id}.svg`))));
-    if (data.kind === 'inspect') {
-      reply({ kind: 'groups', id, groups: template.groups });
-      return;
+    if (data.kind === 'edit') {
+      if (data.source === null) drafts.delete(id);
+      else drafts.set(id, unwrap(inspect(data.source)));
     }
+    const draft = drafts.get(id);
+    const template =
+      draft ??
+      (await load(templates, id, async () => unwrap(inspect(await read(`recipes/${id}.svg`)))));
+    const overrides = template.inputs.flatMap(({ key, kind }) => {
+      const override = data.kind === 'inspect' ? undefined : data.values[key];
+      return override?.kind === kind ? [{ key, override }] : [];
+    });
+    if (data.kind !== 'bind') {
+      reply({
+        kind: 'groups',
+        id,
+        revision,
+        groups: template.groups,
+        values: Object.fromEntries(overrides.map(({ key, override }) => [key, override])),
+      });
+    }
+    if (data.kind === 'inspect') return;
     const assignments: Binding[] = [];
-    const retained = new Map<string, (typeof data.values)[string]>();
-    for (const input of template.inputs) {
-      const override = data.values[input.key];
-      if (override?.kind !== input.kind) continue;
-      retained.set(input.key, override);
-      const { value } = override;
-      if (input.kind === 'image') {
+    for (const { key, override } of overrides) {
+      const { kind, value } = override;
+      if (kind === 'image') {
         if (value !== 'beacon' && value !== 'headland')
           throw new Error('Unknown cookbook artwork.');
         const bytes = await load(artwork, value, () => read(`artwork/${value}.png`));
         assignments.push({
-          key: input.key,
+          key,
           kind: 'image-content',
           bytes,
           mediaType: 'image/png',
         });
       } else {
-        assignments.push({ key: input.key, kind: input.kind, value });
+        assignments.push({ key, kind, value });
       }
     }
     reply({
       kind: 'svg',
       id,
-      revision: data.revision,
-      svg: source === null && !assignments.length ? null : unwrap(template.bind(assignments)).svg,
-      ...(data.kind === 'edit' && {
-        edited: { groups: template.groups, values: Object.fromEntries(retained) },
-      }),
+      revision,
+      svg: !draft && !assignments.length ? null : unwrap(template.bind(assignments)).svg,
     });
   } catch (error) {
     reply({
       kind: 'error',
       id,
-      revision: data.kind === 'inspect' ? null : data.revision,
+      revision,
       error: error instanceof Error ? error.message : String(error),
     });
   }

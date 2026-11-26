@@ -7,13 +7,14 @@
     "preview:cookbook": "esbuild --serve=127.0.0.1:8788 --servedir=.local/site",
     "build:pages": "tsc -p tsconfig.pages.json && esbuild eng/build-pages.ts --bundle --platform=node --format=esm --packages=external --outfile=.local/build-pages.mjs && node .local/build-pages.mjs",
     "typecheck": "tsc -p tsconfig.json && tsc -p cookbook/tsconfig.worker.json",
-    "test:cookbook": "node --test eng/prepare-source.test.ts"
+    "test:cookbook": "npm run build:cookbook && node --test eng/prepare-source.test.ts eng/cookbook.browser.test.ts"
   },
   "devDependencies": {
     "@types/node": "24.19.2",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "esbuild": "0.28.2",
+    "playwright": "1.65.1",
     "typescript": "7.0.2"
   },
   "dependencies": {

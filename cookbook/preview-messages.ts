@@ -8,12 +8,12 @@ export type PreviewRequest =
   | { kind: 'edit'; id: string; revision: number; values: PreviewValues; source: string | null };
 
 export type PreviewResponse =
-  | { kind: 'groups'; id: string; groups: readonly InputGroup[] }
   | {
-      kind: 'svg';
+      kind: 'groups';
       id: string;
       revision: number;
-      svg: string | null;
-      edited?: { groups: readonly InputGroup[]; values: PreviewValues };
+      groups: readonly InputGroup[];
+      values: PreviewValues;
     }
-  | { kind: 'error'; id: string; revision: number | null; error: string };
+  | { kind: 'svg'; id: string; revision: number; svg: string | null }
+  | { kind: 'error'; id: string; revision: number; error: string };

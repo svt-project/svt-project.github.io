@@ -1,64 +1,87 @@
-import type { Tree } from '@lezer/common';
+import type { SyntaxNode, Tree } from '@lezer/common';
 import { parser } from '@lezer/xml';
 import { classHighlighter, highlightTree } from '@lezer/highlight';
 import { svtNames } from '../cookbook/svt-syntax.ts';
-import type { SourceToken } from '../cookbook/guide-model.ts';
+import type { ExcerptSelector, SourceToken } from '../cookbook/guide-model.ts';
 
-interface LineBreak {
-  from: number;
-  to: number;
-  indent: number;
-  kind: 'element' | 'attribute';
+function tagName(element: SyntaxNode, source: string) {
+  const name = element.firstChild?.getChild('TagName');
+  return name && source.slice(name.from, name.to);
 }
 
-// Inserting whitespace between adjacent elements can move SVG glyphs. Element
-// breaks belong to the presentation. Attribute breaks are safe in the XML.
-function tagBreaks(tree: Tree, source: string) {
-  const breaks: LineBreak[] = [];
+function matches(element: SyntaxNode, source: string, selector: ExcerptSelector) {
+  const name = tagName(element, source);
+  if (typeof selector === 'string') return name === selector;
+  if (selector.element && selector.element !== name) return false;
+  if ('child' in selector)
+    return element
+      .getChildren('Element')
+      .some((child) => tagName(child, source) === selector.child);
+  return element.firstChild?.getChildren('Attribute').some((attr) => {
+    const key = attr.getChild('AttributeName');
+    return key && source.slice(key.from, key.to) === selector.attribute;
+  });
+}
+
+// Only change separators in opening tags. Whitespace in values and between
+// text spans is part of the template and can affect its rendered output.
+function formatAttributes(source: string) {
+  const parts: string[] = [];
+  let position = 0;
   let depth = -1;
-  tree.iterate({
+  parser.parse(source).iterate({
     enter(ref) {
+      if (ref.type.isError) throw new Error(`Malformed recipe XML at offset ${ref.from}.`);
       if (ref.name === 'Element') depth++;
-      const opening = ref.name === 'OpenTag' || ref.name === 'SelfClosingTag';
-      const closesContainer = ref.name === 'CloseTag' && ref.node.parent?.getChild('Element');
-      if (!opening && !closesContainer) return;
-      const indent = depth * 2;
-      const lineStart = source.lastIndexOf('\n', ref.from - 1) + 1;
-      if (source.slice(lineStart, ref.from).trim()) {
-        breaks.push({ from: ref.from, to: ref.from, indent, kind: 'element' });
-      }
-      if (
-        !opening ||
-        indent + ref.to - ref.from <= 92 ||
-        source.slice(ref.from, ref.to).includes('\n')
-      )
-        return;
-      for (const attr of ref.node.getChildren('Attribute')) {
-        const previous = attr.prevSibling;
-        if (previous)
-          breaks.push({ from: previous.to, to: attr.from, indent: indent + 2, kind: 'attribute' });
-      }
+      if (ref.name !== 'OpenTag' && ref.name !== 'SelfClosingTag') return;
+      const attrs = ref.node.getChildren('Attribute');
+      const name = ref.node.getChild('TagName');
+      const end = ref.node.lastChild;
+      if (!name || !end || !attrs.length) return;
+      const attributes = attrs.map((attr) => source.slice(attr.from, attr.to));
+      const headerWidth = depth * 2 + (name.to - ref.from) + (end.to - end.from);
+      const width = attributes.reduce((sum, text) => sum + 1 + text.length, headerWidth);
+      const separator = width > 92 ? '\n' + ' '.repeat(depth * 2 + 2) : ' ';
+      parts.push(source.slice(position, name.to), separator, attributes.join(separator));
+      position = end.from;
     },
     leave(ref) {
       if (ref.name === 'Element') depth--;
     },
   });
-  return breaks;
+  parts.push(source.slice(position));
+  return parts.join('');
 }
 
-export function prepareSource(source: string, selectors: readonly string[], imagePath: string) {
-  const tree = parser.parse(source);
-  const breaks = tagBreaks(tree, source);
-  const semantic = new Set(svtNames(tree, source).map((name) => name.from));
-  const lines = source.split('\n').map((text) => ({
-    text,
-    selected: selectors.some((token) => text.includes(token)),
-  }));
-  const selected = lines.filter((line) => line.selected && line.text.trim());
-  if (!selected.length) throw new Error('Excerpt selectors matched no source.');
-  const indent = Math.min(...selected.map((line) => line.text.search(/\S/)));
+function selectElements(tree: Tree, source: string, selectors: readonly ExcerptSelector[]) {
+  const roots: SyntaxNode[] = [];
+  const unmatched = new Set(selectors);
+  tree.iterate({
+    enter(ref) {
+      if (ref.name !== 'Element') return;
+      const element = ref.node;
+      for (const selector of selectors) {
+        if (!matches(element, source, selector)) continue;
+        unmatched.delete(selector);
+        if (element.from >= (roots.at(-1)?.to ?? 0)) roots.push(element);
+      }
+    },
+  });
+  if (!roots.length || unmatched.size)
+    throw new Error('Unmatched XML excerpt selectors: ' + JSON.stringify([...unmatched]));
+  return roots;
+}
 
+export function prepareSource(
+  authored: string,
+  selectors: readonly ExcerptSelector[],
+  imagePath: string,
+) {
+  const formatted = formatAttributes(authored);
+  const tree = parser.parse(formatted);
+  const semantic = new Set(svtNames(tree, formatted).map((name) => name.from));
   const snippet: SourceToken[] = [];
+
   function highlight(start: number, end: number) {
     if (start >= end) return;
     let cursor = start;
@@ -66,42 +89,45 @@ export function prepareSource(source: string, selectors: readonly string[], imag
       tree,
       classHighlighter,
       (from, to, style) => {
-        if (from > cursor) snippet.push([source.slice(cursor, from)]);
-        const text = source.slice(from, to).replaceAll(imagePath, '…');
+        if (from > cursor) snippet.push([formatted.slice(cursor, from)]);
+        const text = formatted.slice(from, to).replaceAll(imagePath, '…');
         snippet.push([text, semantic.has(from) ? 'svt-name' : style]);
         cursor = to;
       },
       start,
       end,
     );
-    if (cursor < end) snippet.push([source.slice(cursor, end)]);
+    if (cursor < end) snippet.push([formatted.slice(cursor, end)]);
   }
 
-  let offset = 0;
-  let index = 0;
-  let next = breaks[index];
-  let sourceStart = 0;
-  const formatted: string[] = [];
-  for (const line of lines) {
-    const end = offset + line.text.length;
-    let cursor = offset + indent;
-    if (line.selected && snippet.length) snippet.push(['\n']);
-    while (next && next.from < end) {
-      if (line.selected) {
-        highlight(cursor, next.from);
-        const layout = '\n' + ' '.repeat(Math.max(0, next.indent - indent));
-        snippet.push(next.kind === 'element' ? [null, layout] : [layout]);
-      }
-      if (next.kind === 'attribute') {
-        formatted.push(source.slice(sourceStart, next.from), '\n', ' '.repeat(next.indent));
-        sourceStart = next.to;
-      }
-      cursor = next.to;
-      next = breaks[++index];
-    }
-    if (line.selected) highlight(cursor, end);
-    offset = end + 1;
+  for (const root of selectElements(tree, formatted, selectors)) {
+    if (snippet.length) snippet.push(['\n']);
+    let position = root.from;
+    let depth = -1;
+    root.cursor().iterate(
+      (node) => {
+        if (node.name === 'Element') depth++;
+        const opening = node.name === 'OpenTag' || node.name === 'SelfClosingTag';
+        const closesContainer = node.name === 'CloseTag' && node.node.parent?.getChild('Element');
+        if (!opening && !closesContainer && node.name !== 'Attribute') return;
+        if (node.from === root.from) return;
+        const lineStart = formatted.lastIndexOf('\n', node.from - 1) + 1;
+        const indent = ' '.repeat(2 * (node.name === 'Attribute' ? depth + 1 : depth));
+        if (lineStart > position && !formatted.slice(lineStart, node.from).trim()) {
+          highlight(position, lineStart);
+          snippet.push([indent]);
+        } else if (opening || closesContainer) {
+          highlight(position, node.from);
+          // Visual only: copying adjacent SVG text spans must preserve their spacing.
+          snippet.push([null, '\n' + indent]);
+        } else return;
+        position = node.from;
+      },
+      (node) => {
+        if (node.name === 'Element') depth--;
+      },
+    );
+    highlight(position, root.to);
   }
-  formatted.push(source.slice(sourceStart));
-  return { formatted: formatted.join(''), snippet };
+  return { formatted, snippet };
 }

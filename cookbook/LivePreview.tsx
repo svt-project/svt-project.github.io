@@ -3,10 +3,11 @@ import type { Exercise } from './guide-model.ts';
 import type { PreviewRequest, PreviewResponse, PreviewValues } from './preview-messages.ts';
 import { useEffect, useRef, useState } from 'react';
 import { TemplateEditor } from './TemplateEditor.tsx';
+import { PreviewImage } from './PreviewImage.tsx';
 import { ExerciseControls } from './ExerciseControls.tsx';
 
 export function LivePreview({
-  exercise: { id, alt, title, editable, linkedImages = [] },
+  exercise: { id, alt, title },
   worker,
 }: {
   exercise: Exercise;
@@ -18,28 +19,31 @@ export function LivePreview({
   const [error, setError] = useState('');
   const [editorOpen, setEditorOpen] = useState(false);
   const [customSource, setCustomSource] = useState(false);
-  const draft = useRef<string | null>(null);
+  const [inspectAttempt, setInspectAttempt] = useState(0);
+  const [canRetry, setCanRetry] = useState(false);
+  const [awaitingGroups, setAwaitingGroups] = useState(false);
+  const hasDraft = useRef(false);
   const pending = useRef<number | undefined>(undefined);
   const revision = useRef(0);
   useEffect(() => {
     if (!worker) return;
     function receive({ data }: MessageEvent<PreviewResponse>) {
-      const responseRevision = data.kind === 'groups' ? 0 : (data.revision ?? 0);
-      if (data.id !== id || responseRevision !== revision.current) return;
+      if (data.id !== id || data.revision !== revision.current) return;
       if (data.kind === 'error') {
+        setCanRetry(data.revision === 0);
         setError(
-          draft.current === null ? data.error : 'Showing the last valid preview. ' + data.error,
+          hasDraft.current ? data.error + ' — showing the last valid preview.' : data.error,
         );
         return;
       }
-      setError('');
-      if (data.kind === 'groups') setGroups(data.groups);
+      if (data.kind === 'groups') {
+        setGroups(data.groups);
+        setValues(data.values);
+        setCustomSource(hasDraft.current);
+        setAwaitingGroups(false);
+      }
       if (data.kind === 'svg') {
-        if (data.edited) {
-          setGroups(data.edited.groups);
-          setValues(data.edited.values);
-          setCustomSource(draft.current !== null);
-        }
+        setError('');
         setUrl(
           data.svg === null
             ? null
@@ -48,6 +52,7 @@ export function LivePreview({
       }
     }
     function failed() {
+      setCanRetry(false);
       setGroups(null);
       setError('The live preview stopped. Reload the guide to try again.');
     }
@@ -59,7 +64,7 @@ export function LivePreview({
       worker.removeEventListener('message', receive);
       worker.removeEventListener('error', failed);
     };
-  }, [id, worker]);
+  }, [id, worker, inspectAttempt]);
   useEffect(
     () => () => {
       if (url) URL.revokeObjectURL(url);
@@ -67,53 +72,61 @@ export function LivePreview({
     [url],
   );
 
-  function requestPreview(next: PreviewValues, editing = false) {
+  function editSource(source: string | null) {
     if (!worker) return;
     window.clearTimeout(pending.current);
-    const source = draft.current;
-    const update = { id, revision: ++revision.current, values: next };
-    const request: PreviewRequest = editable
-      ? { kind: 'edit', source, ...update }
-      : { kind: 'bind', ...update };
-    if (editing) pending.current = window.setTimeout(() => worker.postMessage(request), 200);
-    else worker.postMessage(request);
+    hasDraft.current = source !== null;
+    setAwaitingGroups(true);
+    const request: PreviewRequest = {
+      kind: 'edit',
+      id,
+      revision: ++revision.current,
+      source,
+      values,
+    };
+    pending.current = window.setTimeout(() => worker.postMessage(request), 200);
+  }
+
+  function retryInspection() {
+    setError('');
+    setCanRetry(false);
+    setInspectAttempt((attempt) => attempt + 1);
   }
 
   return (
     <div className="bench">
-      <img className="specimen" src={url ?? `recipes/${id}.svg`} alt={alt} />
+      <PreviewImage
+        key={inspectAttempt}
+        src={url ?? `recipes/${id}.svg`}
+        alt={alt}
+        error={error}
+        retry={canRetry ? retryInspection : undefined}
+      />
       {groups && (
         <ExerciseControls
           title={title}
           groups={groups}
-          linkedImages={linkedImages}
+          awaitingGroups={awaitingGroups}
           values={values}
           customSource={customSource}
           submit={(next) => {
             setValues(next);
-            requestPreview(next);
+            worker?.postMessage({
+              kind: 'bind',
+              id,
+              revision: ++revision.current,
+              values: next,
+            } satisfies PreviewRequest);
           }}
         >
-          {editable && !editorOpen && (
+          {!editorOpen && (
             <button type="button" onClick={() => setEditorOpen(true)}>
               Edit full template
             </button>
           )}
         </ExerciseControls>
       )}
-      {editorOpen && (
-        <TemplateEditor
-          id={id}
-          title={title}
-          onChange={(source) => {
-            draft.current = source;
-            requestPreview(values, true);
-          }}
-        />
-      )}
-      <p className="status" role="status">
-        {error}
-      </p>
+      {editorOpen && <TemplateEditor id={id} title={title} onChange={editSource} />}
     </div>
   );
 }
