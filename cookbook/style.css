@@ -15,11 +15,18 @@ h2, h3 { scroll-margin-top: 16px; }
 h3 { font-size: clamp(1.45rem, 3vw, 2rem); }
 article { padding: 12px 0 42px; }
 article > p { max-width: 68ch; }
+article > p code { padding: .08em .3em; border-radius: 3px; background: #e5ebe3; }
 .bench, .source { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: white; }
 .specimen { display: block; width: 100%; aspect-ratio: 18 / 7; }
 form, .source > div { display: flex; align-items: end; gap: 16px; padding: 15px 18px; flex-wrap: wrap; }
 form[hidden], .status:empty { display: none; }
-form label { display: grid; gap: 5px; font-weight: 600; font-size: .85rem; }
+form .binding-field { display: grid; gap: 5px; min-width: 0; max-width: 100%; }
+form label { font-weight: 600; font-size: .85rem; }
+form fieldset { width: 100%; min-width: 0; margin: 0; border: 1px solid var(--line); border-radius: 4px; padding: 12px; }
+form legend { padding: 0 6px; font-weight: 650; }
+.group-fields { display: flex; align-items: start; flex-wrap: wrap; gap: 12px 18px; }
+.field-help { max-width: 44ch; margin: 0; font-size: .84rem; font-weight: normal; color: var(--muted); white-space: pre-line; }
+fieldset > .field-help { margin-bottom: 12px; }
 input, select, button { font: inherit; color: inherit; }
 input, select, form button { border: 1px solid #a9b9ac; background: white; border-radius: 4px; min-height: 40px; padding: 5px 10px; max-width: 100%; }
 input[type=color] { width: 6rem; }

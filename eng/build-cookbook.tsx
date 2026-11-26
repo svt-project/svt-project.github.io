@@ -26,7 +26,7 @@ async function prepareExercise({ lines, ...exercise }: Recipe): Promise<Exercise
     .trim()
     .split('\n')
     .filter((line) => lines.some((token) => line.includes(token)))
-    .map((line) => line.trim().replace(embedded, '…'))
+    .map((line) => line.replace(/^  /, '').replace(embedded, '…'))
     .join('\n');
   return { ...exercise, snippet };
 }

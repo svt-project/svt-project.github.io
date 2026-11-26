@@ -1,4 +1,5 @@
-import type { TemplateInput } from '@svt-project/svt-js';
+import { useId, type ReactNode } from 'react';
+import type { InputGroup, TemplateInput } from '@svt-project/svt-js';
 import type { PreviewValues } from './preview-messages.ts';
 
 function BindingField({
@@ -10,21 +11,33 @@ function BindingField({
   value: string | undefined;
   onChange: (value: string | undefined) => void;
 }) {
+  const fieldId = useId();
+  const helpId = input.description ? fieldId + '-help' : undefined;
   const label =
-    input.kind === 'image'
-      ? 'Illustration'
-      : input.label.charAt(0).toUpperCase() + input.label.slice(1);
+    input.labelSource === 'key'
+      ? input.label.charAt(0).toUpperCase() + input.label.slice(1)
+      : input.label;
   let field;
   if (input.kind === 'image') {
     field = (
-      <select value={value ?? 'headland'} onChange={(e) => onChange(e.target.value)}>
+      <select
+        id={fieldId}
+        aria-describedby={helpId}
+        value={value ?? 'headland'}
+        onChange={(e) => onChange(e.target.value)}
+      >
         <option value="headland">Headland · landscape</option>
         <option value="beacon">Beacon · portrait</option>
       </select>
     );
   } else if (input.kind === 'paint' && input.default.state !== 'common') {
     field = (
-      <select value={value ?? ''} onChange={(e) => onChange(e.target.value || undefined)}>
+      <select
+        id={fieldId}
+        aria-describedby={helpId}
+        value={value ?? ''}
+        onChange={(e) => onChange(e.target.value || undefined)}
+      >
         <option value="">Authored colors</option>
         <option value="#ae4b32">Clay</option>
         <option value="#1d655c">Sea green</option>
@@ -34,6 +47,8 @@ function BindingField({
   } else {
     field = (
       <input
+        id={fieldId}
+        aria-describedby={helpId}
         type={input.kind === 'paint' ? 'color' : 'text'}
         value={value ?? input.default.raw ?? ''}
         onChange={(e) => onChange(e.target.value)}
@@ -41,30 +56,52 @@ function BindingField({
     );
   }
   return (
-    <label>
-      {label}
+    <div className="binding-field">
+      <label htmlFor={fieldId}>{label}</label>
       {field}
-    </label>
+      {input.description && (
+        <p className="field-help" id={helpId}>
+          {input.description}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function FormGroup({ group, children }: { group: InputGroup; children: ReactNode }) {
+  const helpId = useId();
+  if (group.key === null) return <>{children}</>;
+  return (
+    <fieldset aria-describedby={group.description ? helpId : undefined}>
+      <legend>{group.label ?? group.key}</legend>
+      {group.description && (
+        <p className="field-help" id={helpId}>
+          {group.description}
+        </p>
+      )}
+      <div className="group-fields">{children}</div>
+    </fieldset>
   );
 }
 
 export function ExerciseControls({
   title,
-  inputs,
+  groups,
+  linkedImages,
   values,
   submit,
 }: {
   title: string;
-  inputs: readonly TemplateInput[];
+  groups: readonly InputGroup[];
+  linkedImages: readonly string[];
   values: PreviewValues;
   submit: (values: PreviewValues) => void;
 }) {
-  const images = inputs.filter((input) => input.kind === 'image');
   function change(input: TemplateInput, value: string | undefined) {
     const next = { ...values };
-    for (const target of input.kind === 'image' ? images : [input]) {
-      if (value === undefined) delete next[target.key];
-      else next[target.key] = value;
+    for (const key of linkedImages.includes(input.key) ? linkedImages : [input.key]) {
+      if (value === undefined) delete next[key];
+      else next[key] = value;
     }
     submit(next);
   }
@@ -77,16 +114,20 @@ export function ExerciseControls({
         submit({});
       }}
     >
-      {inputs
-        .filter((input) => input.kind !== 'image' || input === images[0])
-        .map((input) => (
-          <BindingField
-            key={input.key}
-            input={input}
-            value={values[input.key]}
-            onChange={(value) => change(input, value)}
-          />
-        ))}
+      {groups.map((group) => (
+        <FormGroup group={group} key={group.key ?? ''}>
+          {group.inputs
+            .filter((input) => !linkedImages.includes(input.key) || input.key === linkedImages[0])
+            .map((input) => (
+              <BindingField
+                key={input.key}
+                input={input}
+                value={values[input.key]}
+                onChange={(value) => change(input, value)}
+              />
+            ))}
+        </FormGroup>
+      ))}
       <button type="reset">Restore authored values</button>
     </form>
   );

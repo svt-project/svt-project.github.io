@@ -34,7 +34,7 @@ self.onmessage = async ({ data }: MessageEvent<PreviewRequest>) => {
       unwrap(inspect(await read(`recipes/${id}.svg`))),
     );
     if (data.kind === 'inspect') {
-      reply({ kind: 'inputs', id, inputs: template.inputs });
+      reply({ kind: 'groups', id, groups: template.groups });
       return;
     }
     const assignments: Binding[] = [];

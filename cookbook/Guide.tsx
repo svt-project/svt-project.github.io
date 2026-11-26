@@ -20,14 +20,24 @@ function SourceExcerpt({ id, snippet }: Pick<Exercise, 'id' | 'snippet'>) {
   );
 }
 
+function RecipeParagraph({ children, className }: { children: string; className?: string }) {
+  return (
+    <p className={className}>
+      {children
+        .split(/`([^`\n]+)`/u)
+        .map((part, index) => (index % 2 === 1 ? <code key={index}>{part}</code> : part))}
+    </p>
+  );
+}
+
 function GuideExercise({ exercise, worker }: { exercise: Exercise; worker: Worker | null }) {
   const { id, title, note, lesson, snippet } = exercise;
   return (
     <article data-exercise={id}>
       <LinkedHeading as="h3" id={id} title={title} interactive={!!worker} />
-      <p>{note}</p>
+      <RecipeParagraph>{note}</RecipeParagraph>
       <LivePreview exercise={exercise} worker={worker} />
-      <p className="lesson">{lesson}</p>
+      <RecipeParagraph className="lesson">{lesson}</RecipeParagraph>
       <SourceExcerpt id={id} snippet={snippet} />
     </article>
   );

@@ -4,6 +4,8 @@ interface ExerciseCopy {
   readonly alt: string;
   readonly note: string;
   readonly lesson: string;
+  /** Image slots driven by a single comparison control. */
+  readonly linkedImages?: readonly string[];
 }
 
 export interface Recipe extends ExerciseCopy {

@@ -1,17 +1,17 @@
-import type { TemplateInput } from '@svt-project/svt-js';
+import type { InputGroup } from '@svt-project/svt-js';
 import type { Exercise } from './guide-model.ts';
 import type { PreviewRequest, PreviewResponse, PreviewValues } from './preview-messages.ts';
 import { useEffect, useRef, useState } from 'react';
 import { ExerciseControls } from './ExerciseControls.tsx';
 
 export function LivePreview({
-  exercise: { id, alt, title },
+  exercise: { id, alt, title, linkedImages = [] },
   worker,
 }: {
   exercise: Exercise;
   worker: Worker | null;
 }) {
-  const [inputs, setInputs] = useState<readonly TemplateInput[] | null>(null);
+  const [groups, setGroups] = useState<readonly InputGroup[] | null>(null);
   const [values, setValues] = useState<PreviewValues>({});
   const [url, setUrl] = useState<string | null>(null);
   const [error, setError] = useState('');
@@ -25,12 +25,12 @@ export function LivePreview({
       )
         return;
       setError(data.kind === 'error' ? data.error : '');
-      if (data.kind === 'inputs') setInputs(data.inputs);
+      if (data.kind === 'groups') setGroups(data.groups);
       if (data.kind === 'svg')
         setUrl(URL.createObjectURL(new Blob([data.svg], { type: 'image/svg+xml' })));
     }
     function failed() {
-      setInputs(null);
+      setGroups(null);
       setError('The live preview stopped. Reload the guide to try again.');
     }
     worker.addEventListener('message', receive);
@@ -61,7 +61,15 @@ export function LivePreview({
   return (
     <div className="bench">
       <img className="specimen" src={url ?? `recipes/${id}.svg`} alt={alt} />
-      {inputs && <ExerciseControls title={title} inputs={inputs} values={values} submit={submit} />}
+      {groups && (
+        <ExerciseControls
+          title={title}
+          groups={groups}
+          linkedImages={linkedImages}
+          values={values}
+          submit={submit}
+        />
+      )}
       <p className="status" role="status">
         {error}
       </p>

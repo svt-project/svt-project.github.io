@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" data-svt-version="1.0" viewBox="0 0 720 280" font-family="sans-serif">
+  <metadata xmlns:svt="https://svt-project.github.io/ns/svt" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <rdf:RDF>
+      <rdf:Description rdf:about="">
+        <svt:inputs rdf:parseType="Literal">
+          <svt:group key="style" label="Appearance" order="20"/>
+          <svt:group key="trip" label="Trip details" order="10">
+            <svt:description>These details appear on the printed pass.</svt:description>
+          </svt:group>
+          <svt:input key="panel" label="Panel color" group="style"/>
+          <svt:input key="port" label="Destination" group="trip" order="20"/>
+          <svt:input key="holder" label="Passenger name" group="trip" order="10"/>
+        </svt:inputs>
+      </rdf:Description>
+    </rdf:RDF>
+  </metadata>
+  <rect width="720" height="280" fill="#dfdac8"/>
+  <rect x="34" y="28" width="652" height="224" rx="8" fill="#305957" data-svt-fill="panel"/>
+  <text x="65" y="70" font-size="16" letter-spacing="4" fill="#f3e1bd">HARBOR PASS</text>
+  <path d="M65 91H655" stroke="#afc0a8"/>
+  <text x="65" y="145" font-size="15" fill="#e3eadb">TO</text>
+  <text x="107" y="145" font-family="Georgia,serif" font-size="35" fill="white" data-svt-text="port">Cove Pier</text>
+  <text x="65" y="212" font-size="15" fill="#e3eadb">PASSENGER</text>
+  <text x="175" y="212" font-size="27" fill="white" data-svt-text="holder">Morgan Bell</text>
+</svg>
