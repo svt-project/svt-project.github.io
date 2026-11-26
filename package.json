@@ -10,7 +10,7 @@
     "test:cookbook": "npm run build:cookbook && node --test eng/prepare-source.test.ts eng/cookbook.browser.test.ts"
   },
   "devDependencies": {
-    "@types/node": "24.19.2",
+    "@types/node": "24.19.4",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "esbuild": "0.28.2",
