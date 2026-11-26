@@ -67,7 +67,7 @@ async function buildSite(root: string) {
     await cp('node_modules/@svt-project/svt-js/' + name, dest + '/' + name);
   }
   await mkdir(dest + '/licenses', { recursive: true });
-  // The linked SVT package supplies its own notices above. Include the licenses
+  // The SVT package supplies its own notices above. Include the licenses
   // of every other package esbuild picked up from this site's node_modules.
   const packages = new Set<string>();
   for (const file of Object.keys(metafile.inputs)) {

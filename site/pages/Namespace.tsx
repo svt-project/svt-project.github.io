@@ -17,13 +17,13 @@ export function NamespacePage() {
         <h2>Defining documents</h2>
         <ul>
           <li>
-            <a href="https://github.com/svt-project/svt-spec/tree/v1.0.0-rc.1/spec/metadata.md">
-              Input presentation metadata — specification 1.0.0-rc.1
+            <a href="https://github.com/svt-project/svt-spec/tree/v1.0.0/spec/metadata.md">
+              Input presentation metadata — specification 1.0.0
             </a>
           </li>
           <li>
-            <a href="https://github.com/svt-project/svt-spec/tree/v1.0.0-rc.1/spec/versions.md">
-              Format identity and versioning — specification 1.0.0-rc.1
+            <a href="https://github.com/svt-project/svt-spec/tree/v1.0.0/spec/versions.md">
+              Format identity and versioning — specification 1.0.0
             </a>
           </li>
           <li>

@@ -9,10 +9,9 @@ Static project pages for [Scalable Vector Templates](https://svt-project.github.
 
 The specification remains self-contained in [svt-spec](https://github.com/svt-project/svt-spec).
 This site links it without copying its authoritative text or fetching it during deployment.
-The JavaScript implementation lives in [svt-js](https://github.com/svt-project/svt-js), with npm
-identity `@svt-project/svt-js` (publication pending). Include the scope in all installation and import
-examples. Local authoring guide work is tracked in the
-[coordinator](https://github.com/svt-project/.github/issues/5).
+The [JavaScript implementation](https://github.com/svt-project/svt-js) is available on npm as
+[`@svt-project/svt-js`](https://www.npmjs.com/package/@svt-project/svt-js).
+The [coordinator](https://github.com/svt-project/.github/issues/5) tracks authoring guide work.
 
 ## Development and deployment
 
@@ -22,7 +21,7 @@ preview adds the guide to that menu. Page content lives in `site/pages/` and `co
 
 Use Node 24.2 or later to regenerate the three public HTML files after component edits.
 The generated pages in `public/` serve directly from GitHub Pages and work with JavaScript disabled.
-The public build type-checks the page sources independently of the locally linked SVT package.
+The public build type-checks the page sources independently of the cookbook.
 
 ```sh
 npm ci
@@ -38,33 +37,31 @@ URL without a trailing slash may redirect to the HTML directory; its XML identit
 
 ## Local authoring guide
 
-The interactive exercises in `cookbook/` run against the public entry point of
-`@svt-project/svt-js`. Use Node 24 or later. In the library checkout run
-`npm ci --ignore-scripts` and `npm run build`. Then, from this site checkout:
+The exercises in `cookbook/` use the published `@svt-project/svt-js@1.0.0-rc.2` package.
+From the site checkout, install the locked dependencies and start the preview.
 
 ```sh
 npm ci
-npm link --no-save --package-lock=false /path/to/svt-js
 npm run build:cookbook
 npm run preview:cookbook
 ```
 
-With the library linked, `npm run typecheck` checks the entire TypeScript site, including the cookbook
+`npm run typecheck` checks the entire TypeScript site, including the cookbook
 components, Node build scripts, and dedicated Worker. Both build commands run their type checks
 before generating output.
 
 Open [the local guide](http://127.0.0.1:8788/cookbook/). Rebuild after editing a recipe or
-rebuilding the linked library. The build writes the preview to ignored `.local/site/`, inspects
+updating the package. The build writes the preview to ignored `.local/site/`, inspects
 every template, embeds its default artwork for standalone downloads, and bundles the guide’s
 browser Worker. The readable excerpts and preview come from the same recipe. With JavaScript
 disabled, the descriptions, authored artwork, navigation, excerpts, and downloads still work.
 
 Lezer highlights the excerpts during the build. Each exercise loads the shared CodeMirror XML editor
-when you select **Edit full template**. Edits run through the linked library in the
+when you select **Edit full template**. Edits run through SVT in the
 Worker and last until the page is refreshed. Excerpts select whole XML elements by tag,
 attribute, or child element, so wrapping an opening tag across lines preserves the example.
 
-With the library linked, install the test browser once and run the cookbook checks:
+Install the test browser once and run the cookbook checks.
 
 ```sh
 npx playwright install chromium --only-shell
@@ -77,9 +74,8 @@ temporary local server for Chromium to exercise bindings, recovery, editors, and
 The image controls use 3× PNG exports of the SVG masters in `cookbook/artwork/`.
 The PNGs give the outer SVG frame a raster image with a fixed aspect ratio for crop and fade exercises.
 
-The fit-or-crop and ticket examples require a linked library that supports repeated image
-and text keys from the working SVT 1.0.0-rc.2 specification. Both examples use a single
-form field to update multiple targets.
+The fit-or-crop and ticket examples exercise repeated image and text keys from the
+SVT 1.0.0 specification. Each uses one form field to update multiple targets.
 These exercises test authoring and browser behavior. Font metrics and glyph coverage depend on
 installed fonts. Before deploying the guide, pin the published 1.0 package and lockfile, build
 the guide in Pages CI, and upload the built site tree.

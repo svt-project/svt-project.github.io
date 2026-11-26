@@ -15,7 +15,7 @@ export interface PageMetadata {
 }
 
 const siteOrigin = 'https://svt-project.github.io';
-const specification = 'https://github.com/svt-project/svt-spec/tree/v1.0.0-rc.1/spec/README.md';
+const specification = 'https://github.com/svt-project/svt-spec/tree/v1.0.0/spec/README.md';
 const menu = [
   { href: '/', label: 'Home' },
   { href: '/cookbook/', label: 'Authoring Guide' },

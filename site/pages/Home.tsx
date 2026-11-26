@@ -93,7 +93,7 @@ export function HomePage() {
           <div className="actions">
             <a
               className="button"
-              href="https://github.com/svt-project/svt-spec/tree/v1.0.0-rc.1/spec/README.md"
+              href="https://github.com/svt-project/svt-spec/tree/v1.0.0/spec/README.md"
             >
               Read the specification
             </a>
@@ -120,7 +120,8 @@ export function HomePage() {
           their authored defaults, then applies replacement values to an independent SVG document.
         </p>
         <p>
-          Text, image references and paint values become addressable inputs. Optional metadata adds
+          Text, image references and paint values become addressable inputs. Multiple targets of the
+          same kind can share one key. Optional metadata adds
           labels, descriptions and groups for editing tools. Geometry, fonts, clipping and layout
           stay with SVG.
         </p>
@@ -143,13 +144,13 @@ export function HomePage() {
       >
         <div className="links">
           <ProjectLink
-            href="https://github.com/svt-project/svt-spec/tree/v1.0.0-rc.1/spec/README.md"
+            href="https://github.com/svt-project/svt-spec/tree/v1.0.0/spec/README.md"
             title="The specification ↗"
           >
             <p>
               Portable contracts and canonical conformance references. Read the published{' '}
-              <a href="https://github.com/svt-project/svt-spec/releases/tag/v1.0.0-rc.1">
-                1.0.0-rc.1 candidate
+              <a href="https://github.com/svt-project/svt-spec/releases/tag/v1.0.0">
+                1.0.0 specification
               </a>
               , or follow work in the repository.
             </p>
@@ -181,8 +182,8 @@ export function HomePage() {
               package is not this library.
             </p>
             <p>
-              Local builds are available from the repository. After npm publication, install with{' '}
-              <code>npm install @svt-project/svt-js</code>.
+              Install the current release candidate with{' '}
+              <code>npm install @svt-project/svt-js@rc</code>.
             </p>
           </ProjectLink>
           <ProjectLink
