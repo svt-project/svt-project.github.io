@@ -59,6 +59,9 @@ every template, embeds its default artwork for standalone downloads, and bundles
 browser Worker. The readable excerpts and preview come from the same recipe. With JavaScript
 disabled, the descriptions, authored artwork, navigation, excerpts, and downloads still work.
 
+The image controls use 3× PNG exports of the SVG masters in `cookbook/artwork/`.
+The PNGs give the outer SVG frame a raster image with a fixed aspect ratio for crop and fade exercises.
+
 The local trial started with svt-js commit
 [`e0a39ce`](https://github.com/svt-project/svt-js/commit/e0a39ce2c918bc2c722e0eb84cd4a26ddffc4ded)
 and its [accepted specification snapshot](https://github.com/svt-project/svt-spec/tree/21e677727545dc3d9fe30511fbddc93ca023851e).

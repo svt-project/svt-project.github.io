@@ -12,12 +12,12 @@ await cp('public', '.local/site', { recursive: true });
 await mkdir(dest + '/recipes', { recursive: true });
 await cp('cookbook/artwork', dest + '/artwork', { recursive: true });
 await cp('cookbook/style.css', dest + '/style.css');
-const artwork = await readFile('cookbook/artwork/headland.svg');
-const embedded = 'data:image/svg+xml;base64,' + artwork.toString('base64');
+const artwork = await readFile('cookbook/artwork/headland.png');
+const embedded = 'data:image/png;base64,' + artwork.toString('base64');
 async function prepareExercise({ lines, ...exercise }: Recipe): Promise<Exercise> {
   const { id } = exercise;
   const authored = await readFile(`cookbook/recipes/${id}.svg`, 'utf8');
-  const svg = authored.replaceAll('../artwork/headland.svg', embedded);
+  const svg = authored.replaceAll('../artwork/headland.png', embedded);
   const result = inspect(svg);
   if (!result.ok) throw new Error(id + ': ' + result.error.message);
   await writeFile(`${dest}/recipes/${id}.svg`, svg);

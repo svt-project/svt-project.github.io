@@ -1,5 +1,4 @@
 import type { Exercise, GuideGroup } from './guide-model.ts';
-import { PageIntro } from '../site/PageIntro.tsx';
 import { useState, useEffect } from 'react';
 import { GuideContents, LinkedHeading } from './GuideNavigation.tsx';
 import { LivePreview } from './LivePreview.tsx';
@@ -54,10 +53,15 @@ export function Guide({ groups }: { groups: readonly GuideGroup[] }) {
     <div className="layout wrap">
       <GuideContents groups={groups} />
       <main id="main">
-        <PageIntro title="SVG authoring guide">
-          Build template-friendly artwork. Experiment with coastal labels, illustrations, and maps,
-          then take the SVG into your own editor.
-        </PageIntro>
+        <h1>SVG authoring guide</h1>
+        <section aria-labelledby="overview">
+          <LinkedHeading as="h2" id="overview" title="Overview" interactive={!!worker} />
+          <p className="intro">
+            SVT makes text, colors, and images editable through named inputs. This guide shows how to
+            pair those inputs with built-in SVG features so labels stay centered as they grow and
+            replacement images fit their frames.
+          </p>
+        </section>
         <noscript>
           Enable JavaScript to edit the live specimens. Each template and its authored preview are
           available below.

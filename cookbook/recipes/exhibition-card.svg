@@ -6,5 +6,5 @@
   <text x="37" y="150" font-family="Georgia,serif" font-size="38" fill="#234d47" data-svt-text="title">Inshore waters</text>
   <path d="M38 186H340" stroke="#bc6749" stroke-width="2" data-svt-stroke="accent"/>
   <text x="37" y="221" font-size="15" fill="#39574e">Studies from the islands</text>
-  <image x="400" y="26" width="224" height="224" preserveAspectRatio="xMidYMid slice" clip-path="url(#arch)" data-svt-image="print" data-svt-label="Illustration" href="../artwork/headland.svg"/>
+  <image x="400" y="26" width="224" height="224" preserveAspectRatio="xMidYMid slice" clip-path="url(#arch)" data-svt-image="print" data-svt-label="Illustration" href="../artwork/headland.png"/>
 </svg>

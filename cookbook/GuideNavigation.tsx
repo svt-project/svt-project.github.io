@@ -42,6 +42,7 @@ export function GuideContents({ groups }: { groups: readonly GuideGroup[] }) {
       <details open ref={details}>
         <summary>Contents</summary>
         <nav aria-label="Guide contents">
+          {link('overview', 'Overview', 'group-link')}
           {groups.map(({ name, exercises }) => (
             <div key={name}>
               {link(name.toLowerCase(), name, 'group-link')}

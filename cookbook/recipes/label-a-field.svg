@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" data-svt-version="1.0" viewBox="0 0 720 280">
   <rect width="720" height="280" fill="#ced7c8"/>
   <path d="M186 16h348v248H186z" fill="#fff5df"/>
-  <image x="206" y="30" width="308" height="178" href="../artwork/headland.svg" data-svt-image="print" data-svt-label="View from the lookout"/>
+  <image x="206" y="30" width="308" height="178" href="../artwork/headland.png" data-svt-image="print" data-svt-label="View from the lookout"/>
   <text x="360" y="243" text-anchor="middle" font-family="Georgia,serif" font-size="19" fill="#38524d">From the lookout</text>
 </svg>

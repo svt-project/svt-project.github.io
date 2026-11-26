@@ -42,12 +42,12 @@ self.onmessage = async ({ data }: MessageEvent<PreviewRequest>) => {
       const value = data.values[input.key];
       if (value === undefined) continue;
       if (input.kind === 'image') {
-        const bytes = await load(artwork, value, () => read(`artwork/${value}.svg`));
+        const bytes = await load(artwork, value, () => read(`artwork/${value}.png`));
         assignments.push({
           key: input.key,
           kind: 'image-content',
           bytes,
-          mediaType: 'image/svg+xml',
+          mediaType: 'image/png',
         });
       } else {
         assignments.push({ key: input.key, kind: input.kind, value });
