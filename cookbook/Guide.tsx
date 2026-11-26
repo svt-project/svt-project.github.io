@@ -65,7 +65,7 @@ export function Guide({ groups }: { groups: readonly GuideGroup[] }) {
     <div className="layout wrap">
       <GuideContents groups={groups} />
       <main id="main">
-        <h1>SVG authoring guide</h1>
+        <h1>Authoring Guide</h1>
         <section aria-labelledby="overview">
           <LinkedHeading as="h2" id="overview" title="Overview" interactive={!!worker} />
           <p className="intro">

@@ -39,7 +39,7 @@ export function GuideContents({ groups }: { groups: readonly GuideGroup[] }) {
   }
   return (
     <aside>
-      <details open ref={details}>
+      <details ref={details}>
         <summary>Contents</summary>
         <nav aria-label="Guide contents">
           {link('overview', 'Overview', 'group-link')}

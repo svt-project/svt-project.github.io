@@ -33,8 +33,9 @@ for (const { name, exercises } of groups) {
 }
 await writePages('.local/site', {
   path: '/cookbook/',
-  title: 'SVG authoring guide — SVT',
-  description: 'Interactive SVG authoring exercises for text, images, and paint.',
+  title: 'Authoring Guide — SVT',
+  description:
+    'Interactive exercises for authoring SVG templates with SVT, including text, images, paint, and form metadata.',
   head: (
     <>
       <link rel="stylesheet" href="style.css" />

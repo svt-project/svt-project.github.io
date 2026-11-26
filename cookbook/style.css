@@ -52,6 +52,10 @@ pre { background: #eaf0e9; padding: 16px 18px; }
   .form-actions { margin-inline-start: 0; }
 }
 
+@media (max-width: 740px) and (scripting: none) {
+  aside { position: static; }
+}
+
 .source pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .source [data-source-layout]::before { content: attr(data-source-layout); white-space: pre; }
 .source code { overflow-wrap: inherit; }

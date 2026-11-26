@@ -3,6 +3,13 @@ import { FiRotateCcw } from 'react-icons/fi';
 import type { InputGroup, TemplateInput } from '@svt-project/svt-js';
 import type { PreviewValues } from './preview-messages.ts';
 
+const paintPresets = new Map([
+  ['#ae4b32', 'Clay'],
+  ['#1d655c', 'Sea green'],
+  ['#60518a', 'Iris'],
+]);
+const hexColor = /^#[0-9a-f]{6}$/i;
+
 function BindingField({
   input,
   customSource,
@@ -35,17 +42,23 @@ function BindingField({
       </select>
     );
   } else if (input.kind === 'paint' && input.default.state !== 'common') {
+    const hasCustomPaint = value !== undefined && !paintPresets.has(value);
+    // An explicitly empty paint still overrides the authored colors.
+    const authoredOption = value === '' ? 'authored' : '';
     field = (
       <select
         id={fieldId}
         aria-describedby={helpId}
-        value={value ?? ''}
-        onChange={(e) => onChange(e.target.value || undefined)}
+        value={value ?? authoredOption}
+        onChange={(e) => onChange(e.target.value === authoredOption ? undefined : e.target.value)}
       >
-        <option value="">Authored colors</option>
-        <option value="#ae4b32">Clay</option>
-        <option value="#1d655c">Sea green</option>
-        <option value="#60518a">Iris</option>
+        <option value={authoredOption}>Authored colors</option>
+        {Array.from(paintPresets, ([paint, name]) => (
+          <option key={paint} value={paint}>
+            {name}
+          </option>
+        ))}
+        {hasCustomPaint && <option value={value}>{value || 'Empty value'}</option>}
       </select>
     );
   } else {
@@ -54,7 +67,9 @@ function BindingField({
         id={fieldId}
         aria-describedby={helpId}
         type={
-          input.kind === 'paint' && /^#[0-9a-f]{6}$/i.test(input.default.raw ?? '')
+          input.kind === 'paint' &&
+          hexColor.test(input.default.raw ?? '') &&
+          (value === undefined || hexColor.test(value))
             ? 'color'
             : 'text'
         }

@@ -18,7 +18,10 @@ function unwrap<T>(result: Result<T>): T {
 function load<T>(cache: Map<string, Promise<T>>, key: string, fetchValue: () => Promise<T>) {
   const cached = cache.get(key);
   if (cached) return cached;
-  const pending = fetchValue();
+  const pending = fetchValue().catch((error: unknown) => {
+    cache.delete(key);
+    throw error;
+  });
   cache.set(key, pending);
   return pending;
 }
