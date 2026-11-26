@@ -38,7 +38,7 @@ URL without a trailing slash may redirect to the HTML directory; its XML identit
 
 ## Local authoring guide
 
-The seven interactive exercises in `cookbook/` run against the public entry point of
+The interactive exercises in `cookbook/` run against the public entry point of
 `@svt-project/svt-js`. Use Node 24 or later. In the library checkout run
 `npm ci --ignore-scripts` and `npm run build`. Then, from this site checkout:
 

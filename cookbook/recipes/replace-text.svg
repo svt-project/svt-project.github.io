@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" data-svt-version="1.0" viewBox="0 0 720 280">
+  <rect width="720" height="280" fill="#194a48"/>
+  <g fill="#b5dcd0" font-family="sans-serif">
+    <text x="48" y="73" font-size="18" letter-spacing="3">NEXT SAILING</text>
+    <path d="M48 94H672" stroke="#87b2a8"/>
+  </g>
+  <text x="48" y="185" font-size="62" font-family="Georgia,serif" fill="#fff5d8" data-svt-text="destination">North Pier</text>
+</svg>

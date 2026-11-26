@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" data-svt-version="1.0" viewBox="0 0 720 280">
+  <rect width="720" height="280" fill="#e4ded0"/>
+  <rect x="50" y="52" width="620" height="176" rx="12" fill="#305957" data-svt-fill="panel"/>
+  <text x="360" y="163" text-anchor="middle" font-family="Georgia,serif" font-size="54" fill="#fff6db" data-svt-text="name">Sea Wren</text>
+  <g fill="#dcc593"><circle cx="76" cy="140" r="5"/><circle cx="644" cy="140" r="5"/></g>
+</svg>

@@ -5,8 +5,16 @@ export const groups: readonly RecipeGroup[] = [
     name: 'Text',
     exercises: [
       {
+        id: 'replace-text',
+        title: 'Replace a line of text',
+        alt: 'Ferry departure board with a destination beneath the words Next sailing.',
+        note: 'Type Gull Point into Destination. The port name changes while the heading stays in place.',
+        lesson: 'Add data-svt-text to the text element you want to edit. Its contents supply the starting value, here North Pier.',
+        lines: ['data-svt-text'],
+      },
+      {
         id: 'text-anchor',
-        title: 'Center a specimen label',
+        title: 'Keep changing text centered',
         alt: 'Cream archive label with a place name centered between two registration marks.',
         note: 'Replace Flores with São Tomé & Príncipe. The two guide marks stay aligned with the middle of the name as its width changes.',
         lesson:
@@ -15,7 +23,7 @@ export const groups: readonly RecipeGroup[] = [
       },
       {
         id: 'text-leaf',
-        title: 'Keep the unit beside the value',
+        title: 'Keep a unit beside an editable number',
         alt: 'Tide gauge with a reading followed by a smaller m for meters.',
         note: 'Change the gauge reading to 12.75, then clear it. The unit follows the changing number and stays on the gauge when the number is empty.',
         lesson:
@@ -24,7 +32,7 @@ export const groups: readonly RecipeGroup[] = [
       },
       {
         id: 'text-length',
-        title: 'Fit a harbor name to a sign',
+        title: 'Fit text to a fixed width',
         alt: 'Harbor name stretched between two vertical guides.',
         note: 'Compare Bay and South Anchorage. Both occupy the same sign width. Look at the shapes of the letters near the extremes.',
         lesson:
@@ -37,8 +45,16 @@ export const groups: readonly RecipeGroup[] = [
     name: 'Images',
     exercises: [
       {
+        id: 'replace-image',
+        title: 'Replace an image',
+        alt: 'A single coastal illustration mounted on a postcard.',
+        note: 'Choose Beacon in the illustration menu to swap the landscape for a lighthouse. The postcard keeps the same space for the print.',
+        lesson: 'Put data-svt-image on an image element. Its href supplies the starting artwork, and its width and height define the space available for a replacement.',
+        lines: ['data-svt-image'],
+      },
+      {
         id: 'image-fit',
-        title: 'Contain or crop an illustration',
+        title: 'Fit or crop an image to a frame',
         alt: 'The same coastal illustration in two frames labeled Contain and Crop.',
         note: 'Switch from the wide headland to the tall beacon. Compare the margins and the parts of the illustration visible in each frame.',
         lesson:
@@ -51,8 +67,16 @@ export const groups: readonly RecipeGroup[] = [
     name: 'Color',
     exercises: [
       {
+        id: 'change-fill',
+        title: 'Change a shape’s fill color',
+        alt: 'A triangular harbor pennant flying from a dark mast.',
+        note: 'Pick a new color for the pennant. The cloth changes color while the mast keeps its dark finish.',
+        lesson: 'Put data-svt-fill on the shape. The fill attribute supplies the starting color, and the name of the hook identifies the input to edit.',
+        lines: ['data-svt-fill'],
+      },
+      {
         id: 'shared-color',
-        title: 'Coordinate a pin and its route',
+        title: 'Share one color across fills and strokes',
         alt: 'Map with a dashed route from West Pier to a pin at Beacon Hill.',
         note: 'Choose a route color. The pin and dashed line pick it up together. Reset to recover their two distinct authored colors.',
         lesson:
@@ -61,7 +85,7 @@ export const groups: readonly RecipeGroup[] = [
       },
       {
         id: 'color-cascade',
-        title: 'See which paint wins',
+        title: 'Find out why a fill color won’t change',
         alt: 'Two signal discs, one painted by an attribute and one by a class rule.',
         note: 'Change the signal color. Only the left disc changes appearance, even though both fill attributes receive the new paint.',
         lesson:
@@ -74,8 +98,16 @@ export const groups: readonly RecipeGroup[] = [
     name: 'Composition',
     exercises: [
       {
+        id: 'layer-text',
+        title: 'Layer editable text over a background',
+        alt: 'A colored panel with a boat name printed across it.',
+        note: 'Rename the boat, then change the panel color. Each edit affects one layer of the nameplate.',
+        lesson: 'Draw the rectangle first and the text second so the lettering appears on top. Give the background fill and the boat name separate input keys to edit them independently.',
+        lines: ['data-svt-fill', 'data-svt-text'],
+      },
+      {
         id: 'exhibition-card',
-        title: 'Frame an exhibition print',
+        title: 'Clip a replaceable image to a shape',
         alt: 'Gallery card with a title on the left and an arched coastal print on the right.',
         note: 'Change the exhibition title, swap the print, and choose an accent. The arch keeps its silhouette through every edit.',
         lesson:

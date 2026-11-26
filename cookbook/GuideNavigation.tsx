@@ -1,4 +1,5 @@
 import type { GuideGroup } from './guide-model.ts';
+import { FiLink } from 'react-icons/fi';
 import { useEffect, useRef, useState } from 'react';
 
 export function GuideContents({ groups }: { groups: readonly GuideGroup[] }) {
@@ -58,7 +59,7 @@ export function GuideContents({ groups }: { groups: readonly GuideGroup[] }) {
 }
 
 function CopyLink({ id, title }: { id: string; title: string }) {
-  const [label, setLabel] = useState('#');
+  const [feedback, setFeedback] = useState('');
   const timeout = useRef<number>(undefined);
   useEffect(() => () => clearTimeout(timeout.current), []);
   async function copy() {
@@ -66,12 +67,12 @@ function CopyLink({ id, title }: { id: string; title: string }) {
     url.hash = id;
     try {
       await navigator.clipboard.writeText(url.href);
-      setLabel('Copied');
+      setFeedback('Copied');
       clearTimeout(timeout.current);
-      timeout.current = window.setTimeout(() => setLabel('#'), 1500);
+      timeout.current = window.setTimeout(() => setFeedback(''), 1500);
     } catch {
       location.hash = id;
-      setLabel('Copy address from browser');
+      setFeedback('Copy address from browser');
     }
   }
   return (
@@ -81,7 +82,8 @@ function CopyLink({ id, title }: { id: string; title: string }) {
       title={'Copy link to ' + title}
       onClick={copy}
     >
-      {label}
+      <FiLink aria-hidden="true" focusable="false" />
+      <span role="status">{feedback}</span>
     </button>
   );
 }

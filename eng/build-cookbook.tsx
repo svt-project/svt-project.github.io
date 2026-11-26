@@ -65,7 +65,7 @@ await build({
 for (const name of ['LICENSE', 'NOTICE', 'THIRD-PARTY-NOTICES.txt']) {
   await cp('node_modules/@svt-project/svt-js/' + name, dest + '/' + name);
 }
-await mkdir(dest + '/licenses', { recursive: true });
-for (const name of ['react', 'react-dom', 'scheduler']) {
+await cp('cookbook/licenses', dest + '/licenses', { recursive: true });
+for (const name of ['react', 'react-dom', 'react-icons', 'scheduler']) {
   await cp(`node_modules/${name}/LICENSE`, `${dest}/licenses/${name}.txt`);
 }
