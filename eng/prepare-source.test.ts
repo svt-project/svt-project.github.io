@@ -78,6 +78,15 @@ test('adjacent text spans get separate indented display lines and retain their c
   assert.equal(formatted, source);
 });
 
+test('copying multiline element content preserves authored spaces, tabs, and blank lines', () => {
+  const content = 'A\n        <tspan data-svt-text="label">B</tspan>\n\n\t';
+  for (const parent of ['<svg>', '<svg xml:space="preserve">']) {
+    const text = '<text>' + content + '</text>';
+    const { snippet } = prepareSource(parent + '\n    ' + text + '\n</svg>', ['text'], imagePath);
+    assert.equal(snippet.map(([source]) => source).join(''), text);
+  }
+});
+
 test('attributes on a long nested tag indent one level beyond their owning element', () => {
   const path = 'M0 0 ' + 'L10 10 '.repeat(10);
   const source =

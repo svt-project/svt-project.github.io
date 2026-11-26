@@ -353,6 +353,26 @@ test('invalid source overlays the last preview, then edited bindings and authore
   assert.deepEqual(await requests.jsonValue(), ['edit', 'edit', 'bind', 'bind', 'edit']);
 });
 
+test('copying a nested excerpt retains the downloaded template’s indentation', async (t) => {
+  const page = await openPage(t, { permissions: ['clipboard-read', 'clipboard-write'] });
+  await page.goto(guide + '#organize-form-fields');
+  const recipe = page.locator('[data-exercise="organize-form-fields"]');
+  const response = await page.request.get(guide + 'recipes/organize-form-fields.svg');
+  assert(response.ok());
+  const expected = (await response.text()).match(/<svt:inputs\b[^>]*>[\s\S]*?<\/svt:inputs>/);
+  assert(expected);
+  await recipe.locator('pre code').evaluate((code) => {
+    const range = document.createRange();
+    range.selectNodeContents(code);
+    const selection = window.getSelection();
+    if (!selection) throw new Error('Cannot select source code');
+    selection.removeAllRanges();
+    selection.addRange(range);
+  });
+  await page.keyboard.press('ControlOrMeta+c');
+  assert.equal(await page.evaluate(() => navigator.clipboard.readText()), expected[0]);
+});
+
 test('mobile deep links expose the exercise heading with JavaScript disabled', async (t) => {
   const page = await openPage(t, {
     viewport: { width: 390, height: 844 },

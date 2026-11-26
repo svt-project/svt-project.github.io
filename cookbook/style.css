@@ -67,6 +67,7 @@ pre { background: #eaf0e9; padding: 16px 18px; }
 
 .source pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .source [data-source-layout]::before { content: attr(data-source-layout); white-space: pre; }
+.source .source-outer-indent { font-size: 0; }
 .source code { overflow-wrap: inherit; }
 
 .tok-typeName { color: #294d78; }

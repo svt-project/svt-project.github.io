@@ -102,6 +102,9 @@ export function prepareSource(
 
   for (const root of selectElements(tree, formatted, selectors)) {
     if (snippet.length) snippet.push(['\n']);
+    const rootLine = formatted.lastIndexOf('\n', root.from - 1) + 1;
+    const prefix = formatted.slice(rootLine, root.from);
+    const outerIndent = /^[ \t]+$/.test(prefix) ? prefix : '';
     let position = root.from;
     let depth = -1;
     root.cursor().iterate(
@@ -114,8 +117,18 @@ export function prepareSource(
         const lineStart = formatted.lastIndexOf('\n', node.from - 1) + 1;
         const indent = ' '.repeat(2 * (node.name === 'Attribute' ? depth + 1 : depth));
         if (lineStart > position && !formatted.slice(lineStart, node.from).trim()) {
-          highlight(position, lineStart);
-          snippet.push([indent]);
+          // Only attribute separators are markup. Before a child or closing tag,
+          // the authored indentation is character data and stays in the excerpt.
+          if (node.name === 'Attribute') {
+            highlight(position, lineStart);
+            snippet.push([indent]);
+          } else if (outerIndent && formatted.startsWith(outerIndent, lineStart)) {
+            // Remove the enclosing element's indentation visually, leaving its
+            // bytes selectable along with the rest of the excerpt.
+            highlight(position, lineStart);
+            snippet.push([outerIndent, 'source-outer-indent']);
+            highlight(lineStart + outerIndent.length, node.from);
+          } else return;
         } else if (opening || closesContainer) {
           highlight(position, node.from);
           // Visual only: copying adjacent SVG text spans must preserve their spacing.
