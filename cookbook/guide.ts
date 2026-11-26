@@ -95,7 +95,7 @@ export const groups: readonly RecipeGroup[] = [
         alt: 'A coastal view gradually emerges from the cream background beside a field-note title.',
         note: 'A gradient in a `<mask>` blends the edge of a replaceable image into the page.',
         lesson: 'The white mask fades from transparent to opaque as `stop-opacity` increases. SVG reveals progressively more of the image across that transition. SVT updates `href` on the `<image>`, so each replacement uses the same fade.',
-        lines: ['<linearGradient', '<stop ', '</linearGradient>', '<mask', 'data-svt-image'],
+        lines: ['<defs>', '<linearGradient', '<stop ', '</linearGradient>', '<mask', '</defs>', 'data-svt-image'],
       },
     ],
   },
@@ -127,7 +127,7 @@ export const groups: readonly RecipeGroup[] = [
         note: 'A CSS rule can keep a shape the same color even when its `fill` attribute changes.',
         lesson:
           'SVT writes the selected color to `fill` on both circles. The left circle takes its color from that attribute. On the right circle, the `.signal` rule takes precedence, so SVG continues to render the color from the stylesheet.',
-        lines: ['<style>', 'data-svt-fill'],
+        lines: ['<style>', '<g stroke=', 'data-svt-fill', '  </g>'],
       },
       {
         id: 'keep-color-shading',
@@ -135,7 +135,7 @@ export const groups: readonly RecipeGroup[] = [
         alt: 'A spherical fishing float has a pale highlight near its top and a shaded lower rim.',
         note: 'A translucent gradient adds depth to a shape with an editable base color.',
         lesson: 'SVT updates `fill` on the lower circle. SVG paints a second circle over it using `<radialGradient>`. The transparent middle reveals the base color, while the pale and dark stops tint the highlight and shadow.',
-        lines: ['<radialGradient', '<stop ', '</radialGradient>', '<circle'],
+        lines: ['<defs>', '<radialGradient', '<stop ', '</radialGradient>', '</defs>', '<circle'],
       },
     ],
   },

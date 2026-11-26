@@ -54,3 +54,39 @@ test('formatting preserves every recipe’s SVG, including whitespace between te
     }
   }
 });
+
+test('adjacent text spans get separate indented display lines and retain their copyable XML', () => {
+  const parent = '<text x="45" y="185" fill="#fff6d9" font-size="86">';
+  const depth = '<tspan data-svt-text="depth">2.4</tspan>';
+  const unit = '<tspan dx="9" font-size="30">m</tspan>';
+  const compact = parent + depth + unit + '</text>';
+  const source = '<svg xmlns="http://www.w3.org/2000/svg">\n  ' + compact + '\n</svg>';
+  const { snippet, formatted } = prepareSource(source, ['data-svt-text'], imagePath);
+  assert.equal(
+    snippet.map(([text, layout]) => text ?? layout).join(''),
+    [parent, '  ' + depth, '  ' + unit, '</text>'].join('\n'),
+  );
+  assert.equal(snippet.map(([text]) => text).join(''), compact);
+  assert.equal(formatted, source);
+});
+
+test('attributes on a long nested tag indent one level beyond their owning element', () => {
+  const path = 'M0 0 ' + 'L10 10 '.repeat(10);
+  const source =
+    '<svg>\n  <defs><clipPath id="clip"><path id="outline" d="' +
+    path +
+    '"/></clipPath></defs>\n</svg>';
+  const { snippet } = prepareSource(source, ['id="outline"'], imagePath);
+  assert.equal(
+    snippet.map(([text, layout]) => text ?? layout).join(''),
+    [
+      '<defs>',
+      '  <clipPath id="clip">',
+      '    <path',
+      '      id="outline"',
+      '      d="' + path + '"/>',
+      '  </clipPath>',
+      '</defs>',
+    ].join('\n'),
+  );
+});

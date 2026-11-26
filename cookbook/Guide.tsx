@@ -15,7 +15,9 @@ function SourceExcerpt({ id, snippet }: Pick<Exercise, 'id' | 'snippet'>) {
       <pre>
         <code>
           {snippet.map(([text, style], index) =>
-            style ? (
+            text === null ? (
+              <span key={index} aria-hidden="true" data-source-layout={style} />
+            ) : style ? (
               <span className={style} key={index}>
                 {text}
               </span>

@@ -13,7 +13,8 @@ export interface Recipe extends ExerciseCopy {
   readonly lines: readonly string[];
 }
 
-export type SourceToken = readonly [text: string, style?: string];
+/** A null text token adds visual indentation without adding characters to copied XML. */
+export type SourceToken = readonly [text: string, style?: string] | readonly [null, layout: string];
 
 export interface Exercise extends ExerciseCopy {
   readonly snippet: readonly SourceToken[];
