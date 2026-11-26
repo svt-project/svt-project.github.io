@@ -73,6 +73,7 @@ export function mountEditor(
   const folds = foldImages(source);
   view.dispatch({ effects: folds });
   return {
+    focus: () => view.focus(),
     destroy: () => view.destroy(),
     restore() {
       view.dispatch({

@@ -16,6 +16,7 @@ export function LivePreview({
   const [values, setValues] = useState<PreviewValues>({});
   const [url, setUrl] = useState<string | null>(null);
   const [error, setError] = useState('');
+  const [editorOpen, setEditorOpen] = useState(false);
   const [customSource, setCustomSource] = useState(false);
   const draft = useRef<string | null>(null);
   const pending = useRef<number | undefined>(undefined);
@@ -92,9 +93,15 @@ export function LivePreview({
             setValues(next);
             requestPreview(next);
           }}
-        />
+        >
+          {editable && !editorOpen && (
+            <button type="button" onClick={() => setEditorOpen(true)}>
+              Edit full template
+            </button>
+          )}
+        </ExerciseControls>
       )}
-      {editable && worker && (
+      {editorOpen && (
         <TemplateEditor
           id={id}
           title={title}

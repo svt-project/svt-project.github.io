@@ -1,4 +1,5 @@
 import { useId, type ReactNode } from 'react';
+import { FiRotateCcw } from 'react-icons/fi';
 import type { InputGroup, TemplateInput } from '@svt-project/svt-js';
 import type { PreviewValues } from './preview-messages.ts';
 
@@ -91,7 +92,16 @@ function FormGroup({ group, children }: { group: InputGroup; children: ReactNode
   );
 }
 
+function ResetValuesButton() {
+  return (
+    <button type="reset" className="reset-values" aria-label="Reset values" title="Reset values">
+      <FiRotateCcw aria-hidden="true" focusable="false" />
+    </button>
+  );
+}
+
 export function ExerciseControls({
+  children,
   title,
   groups,
   linkedImages,
@@ -99,6 +109,7 @@ export function ExerciseControls({
   values,
   submit,
 }: {
+  children?: ReactNode;
   title: string;
   groups: readonly InputGroup[];
   linkedImages: readonly string[];
@@ -138,7 +149,10 @@ export function ExerciseControls({
             ))}
         </FormGroup>
       ))}
-      <button type="reset">Restore authored values</button>
+      <div className="form-actions">
+        {children}
+        <ResetValuesButton />
+      </div>
     </form>
   );
 }

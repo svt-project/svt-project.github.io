@@ -10,9 +10,9 @@ export function TemplateEditor({
   title: string;
   onChange: (source: string | null) => void;
 }) {
+  const panel = useRef<HTMLElement>(null);
   const host = useRef<HTMLDivElement>(null);
   const editor = useRef<ReturnType<typeof mountEditor> | null>(null);
-  const [opened, setOpened] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState('');
@@ -20,7 +20,8 @@ export function TemplateEditor({
 
   useEffect(() => {
     const parent = host.current;
-    if (!opened || !parent) return;
+    if (!parent) return;
+    panel.current?.focus();
     const controller = new AbortController();
     async function start(parent: HTMLDivElement) {
       const [module, response] = await Promise.all([
@@ -31,6 +32,7 @@ export function TemplateEditor({
       const source = await response.text();
       if (controller.signal.aborted) return;
       editor.current = module.mountEditor(parent, source, title + ' template source', changed);
+      if (document.activeElement === panel.current) editor.current.focus();
       setReady(true);
     }
     setError('');
@@ -42,18 +44,17 @@ export function TemplateEditor({
       editor.current?.destroy();
       editor.current = null;
     };
-  }, [opened, id, title, attempt]);
+  }, [id, title, attempt]);
 
   return (
-    <details
+    <section
       className="template-editor"
-      onToggle={(event) => {
-        if (event.currentTarget.open) setOpened(true);
-      }}
+      ref={panel}
+      tabIndex={-1}
+      aria-label={title + ' template editor'}
     >
-      <summary>Edit full template</summary>
       <div className="editor-tools">
-        <span>Edits update the preview and form.</span>
+        <strong>Template source</strong>
         {ready && (
           <button type="button" onClick={() => editor.current?.restore()}>
             Restore template
@@ -71,6 +72,6 @@ export function TemplateEditor({
         </p>
       )}
       <div ref={host} />
-    </details>
+    </section>
   );
 }
