@@ -4,6 +4,7 @@ interface ExerciseCopy {
   readonly alt: string;
   readonly note: string;
   readonly lesson: string;
+  readonly editable?: boolean;
   /** Image slots driven by a single comparison control. */
   readonly linkedImages?: readonly string[];
 }
@@ -12,8 +13,10 @@ export interface Recipe extends ExerciseCopy {
   readonly lines: readonly string[];
 }
 
+export type SourceToken = readonly [text: string, style?: string];
+
 export interface Exercise extends ExerciseCopy {
-  readonly snippet: string;
+  readonly snippet: readonly SourceToken[];
 }
 
 interface Group<T> {

@@ -6,7 +6,8 @@
     "build:cookbook": "npm run typecheck && esbuild eng/build-cookbook.tsx --bundle --platform=node --format=esm --packages=external --outfile=.local/build-cookbook.mjs && node .local/build-cookbook.mjs",
     "preview:cookbook": "esbuild --serve=127.0.0.1:8788 --servedir=.local/site",
     "build:pages": "tsc -p tsconfig.pages.json && esbuild eng/build-pages.ts --bundle --platform=node --format=esm --packages=external --outfile=.local/build-pages.mjs && node .local/build-pages.mjs",
-    "typecheck": "tsc -p tsconfig.json && tsc -p cookbook/tsconfig.worker.json"
+    "typecheck": "tsc -p tsconfig.json && tsc -p cookbook/tsconfig.worker.json",
+    "test:cookbook": "node --test eng/prepare-source.test.ts"
   },
   "devDependencies": {
     "@types/node": "24.19.2",
@@ -16,6 +17,14 @@
     "typescript": "7.0.2"
   },
   "dependencies": {
+    "@codemirror/commands": "6.11.2",
+    "@codemirror/lang-xml": "6.1.0",
+    "@codemirror/language": "6.13.1",
+    "@codemirror/state": "6.7.6",
+    "@codemirror/view": "6.44.0",
+    "@lezer/common": "1.5.7",
+    "@lezer/highlight": "1.2.5",
+    "@lezer/xml": "1.0.6",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "react-icons": "5.7.0"

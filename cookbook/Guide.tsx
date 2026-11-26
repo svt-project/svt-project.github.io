@@ -13,7 +13,17 @@ function SourceExcerpt({ id, snippet }: Pick<Exercise, 'id' | 'snippet'>) {
         </a>
       </div>
       <pre>
-        <code>{snippet}</code>
+        <code>
+          {snippet.map(([text, style], index) =>
+            style ? (
+              <span className={style} key={index}>
+                {text}
+              </span>
+            ) : (
+              text
+            ),
+          )}
+        </code>
       </pre>
     </div>
   );

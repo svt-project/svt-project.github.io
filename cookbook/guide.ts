@@ -82,6 +82,7 @@ export const groups: readonly RecipeGroup[] = [
       },
       {
         id: 'zoom-image-detail',
+        editable: true,
         title: 'Zoom in on part of an image',
         alt: 'A dashed square marks a detail on the full illustration. The neighboring frame shows that region at twice the size.',
         note: 'A smaller `viewBox` enlarges the outlined part of the image while keeping its proportions.',
@@ -192,6 +193,7 @@ export const groups: readonly RecipeGroup[] = [
       },
       {
         id: 'organize-form-fields',
+        editable: true,
         title: 'Group fields and set their order',
         alt: 'A harbor pass with a passenger name and destination on a colored panel.',
         note: '`<svt:group>` puts related fields together, and `order` sets their sequence in the form.',

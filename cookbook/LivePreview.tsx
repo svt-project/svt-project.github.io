@@ -2,10 +2,11 @@ import type { InputGroup } from '@svt-project/svt-js';
 import type { Exercise } from './guide-model.ts';
 import type { PreviewRequest, PreviewResponse, PreviewValues } from './preview-messages.ts';
 import { useEffect, useRef, useState } from 'react';
+import { TemplateEditor } from './TemplateEditor.tsx';
 import { ExerciseControls } from './ExerciseControls.tsx';
 
 export function LivePreview({
-  exercise: { id, alt, title, linkedImages = [] },
+  exercise: { id, alt, title, editable, linkedImages = [] },
   worker,
 }: {
   exercise: Exercise;
@@ -15,19 +16,35 @@ export function LivePreview({
   const [values, setValues] = useState<PreviewValues>({});
   const [url, setUrl] = useState<string | null>(null);
   const [error, setError] = useState('');
+  const [customSource, setCustomSource] = useState(false);
+  const draft = useRef<string | null>(null);
+  const pending = useRef<number | undefined>(undefined);
   const revision = useRef(0);
   useEffect(() => {
     if (!worker) return;
     function receive({ data }: MessageEvent<PreviewResponse>) {
-      if (
-        data.id !== id ||
-        ('revision' in data && data.revision !== null && data.revision !== revision.current)
-      )
+      const responseRevision = data.kind === 'groups' ? 0 : (data.revision ?? 0);
+      if (data.id !== id || responseRevision !== revision.current) return;
+      if (data.kind === 'error') {
+        setError(
+          draft.current === null ? data.error : 'Showing the last valid preview. ' + data.error,
+        );
         return;
-      setError(data.kind === 'error' ? data.error : '');
+      }
+      setError('');
       if (data.kind === 'groups') setGroups(data.groups);
-      if (data.kind === 'svg')
-        setUrl(URL.createObjectURL(new Blob([data.svg], { type: 'image/svg+xml' })));
+      if (data.kind === 'svg') {
+        if (data.edited) {
+          setGroups(data.edited.groups);
+          setValues(data.edited.values);
+          setCustomSource(draft.current !== null);
+        }
+        setUrl(
+          data.svg === null
+            ? null
+            : URL.createObjectURL(new Blob([data.svg], { type: 'image/svg+xml' })),
+        );
+      }
     }
     function failed() {
       setGroups(null);
@@ -37,6 +54,7 @@ export function LivePreview({
     worker.addEventListener('error', failed);
     worker.postMessage({ kind: 'inspect', id } satisfies PreviewRequest);
     return () => {
+      window.clearTimeout(pending.current);
       worker.removeEventListener('message', receive);
       worker.removeEventListener('error', failed);
     };
@@ -48,16 +66,18 @@ export function LivePreview({
     [url],
   );
 
-  function submit(next: PreviewValues) {
+  function requestPreview(next: PreviewValues, editing = false) {
     if (!worker) return;
-    setValues(next);
-    worker.postMessage({
-      kind: 'bind',
-      id,
-      revision: ++revision.current,
-      values: next,
-    } satisfies PreviewRequest);
+    window.clearTimeout(pending.current);
+    const source = draft.current;
+    const update = { id, revision: ++revision.current, values: next };
+    const request: PreviewRequest = editable
+      ? { kind: 'edit', source, ...update }
+      : { kind: 'bind', ...update };
+    if (editing) pending.current = window.setTimeout(() => worker.postMessage(request), 200);
+    else worker.postMessage(request);
   }
+
   return (
     <div className="bench">
       <img className="specimen" src={url ?? `recipes/${id}.svg`} alt={alt} />
@@ -67,7 +87,21 @@ export function LivePreview({
           groups={groups}
           linkedImages={linkedImages}
           values={values}
-          submit={submit}
+          customSource={customSource}
+          submit={(next) => {
+            setValues(next);
+            requestPreview(next);
+          }}
+        />
+      )}
+      {editable && worker && (
+        <TemplateEditor
+          id={id}
+          title={title}
+          onChange={(source) => {
+            draft.current = source;
+            requestPreview(values, true);
+          }}
         />
       )}
       <p className="status" role="status">

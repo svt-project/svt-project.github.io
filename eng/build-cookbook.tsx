@@ -1,6 +1,7 @@
 import { cp, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { build } from 'esbuild';
 import { inspect } from '@svt-project/svt-js';
+import { prepareSource } from './prepare-source.ts';
 import { groups } from '../cookbook/guide.ts';
 
 import { writePages } from '../site/render.tsx';
@@ -17,17 +18,12 @@ const embedded = 'data:image/png;base64,' + artwork.toString('base64');
 async function prepareExercise({ lines, ...exercise }: Recipe): Promise<Exercise> {
   const { id } = exercise;
   const authored = await readFile(`cookbook/recipes/${id}.svg`, 'utf8');
-  const svg = authored.replaceAll('../artwork/headland.png', embedded);
+  const imagePath = '../artwork/headland.png';
+  const { formatted, snippet } = prepareSource(authored, lines, imagePath);
+  const svg = formatted.replaceAll(imagePath, embedded);
   const result = inspect(svg);
   if (!result.ok) throw new Error(id + ': ' + result.error.message);
   await writeFile(`${dest}/recipes/${id}.svg`, svg);
-  // Abbreviate embedded image bytes in the excerpt. Downloads retain the complete source.
-  const snippet = svg
-    .trim()
-    .split('\n')
-    .filter((line) => lines.some((token) => line.includes(token)))
-    .map((line) => line.replace(/^  /, '').replace(embedded, '…'))
-    .join('\n');
   return { ...exercise, snippet };
 }
 
@@ -51,10 +47,13 @@ await writePages('.local/site', {
     </div>
   ),
 });
-await build({
+const { metafile } = await build({
+  metafile: true,
   entryPoints: ['cookbook/client.tsx', 'cookbook/worker.ts'],
   bundle: true,
   format: 'esm',
+  splitting: true,
+  chunkNames: 'chunks/[name]-[hash]',
   jsx: 'automatic',
   minify: true,
   define: { COOKBOOK_GROUPS: JSON.stringify(prepared) },
@@ -66,6 +65,13 @@ for (const name of ['LICENSE', 'NOTICE', 'THIRD-PARTY-NOTICES.txt']) {
   await cp('node_modules/@svt-project/svt-js/' + name, dest + '/' + name);
 }
 await cp('cookbook/licenses', dest + '/licenses', { recursive: true });
-for (const name of ['react', 'react-dom', 'react-icons', 'scheduler']) {
-  await cp(`node_modules/${name}/LICENSE`, `${dest}/licenses/${name}.txt`);
+// The linked SVT package supplies its own notices above. Include the licenses
+// of every other package esbuild picked up from this site's node_modules.
+const packages = new Set<string>();
+for (const file of Object.keys(metafile.inputs)) {
+  const name = /^node_modules\/((?:@[^/]+\/)?[^/]+)\//.exec(file)?.[1];
+  if (name && name !== '@svt-project/svt-js') packages.add(name);
+}
+for (const name of packages) {
+  await cp(`node_modules/${name}/LICENSE`, `${dest}/licenses/${name.replace('/', '-')}.txt`);
 }

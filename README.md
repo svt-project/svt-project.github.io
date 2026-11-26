@@ -59,6 +59,11 @@ every template, embeds its default artwork for standalone downloads, and bundles
 browser Worker. The readable excerpts and preview come from the same recipe. With JavaScript
 disabled, the descriptions, authored artwork, navigation, excerpts, and downloads still work.
 
+Lezer highlights the excerpts during the build. The zoom crop and grouped metadata exercises
+also load a CodeMirror XML editor when opened. Edits run through the linked library in the
+Worker and last until the page is refreshed. Run `npm run test:cookbook` to check namespace
+highlighting and verify that formatting preserves each recipe’s SVG.
+
 The image controls use 3× PNG exports of the SVG masters in `cookbook/artwork/`.
 The PNGs give the outer SVG frame a raster image with a fixed aspect ratio for crop and fade exercises.
 

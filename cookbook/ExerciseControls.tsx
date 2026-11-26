@@ -4,10 +4,12 @@ import type { PreviewValues } from './preview-messages.ts';
 
 function BindingField({
   input,
+  customSource,
   value,
   onChange,
 }: {
   input: TemplateInput;
+  customSource: boolean;
   value: string | undefined;
   onChange: (value: string | undefined) => void;
 }) {
@@ -23,9 +25,10 @@ function BindingField({
       <select
         id={fieldId}
         aria-describedby={helpId}
-        value={value ?? 'headland'}
-        onChange={(e) => onChange(e.target.value)}
+        value={value ?? (customSource ? '' : 'headland')}
+        onChange={(e) => onChange(e.target.value || undefined)}
       >
+        {customSource && <option value="">Template artwork</option>}
         <option value="headland">Headland · landscape</option>
         <option value="beacon">Beacon · portrait</option>
       </select>
@@ -49,7 +52,11 @@ function BindingField({
       <input
         id={fieldId}
         aria-describedby={helpId}
-        type={input.kind === 'paint' ? 'color' : 'text'}
+        type={
+          input.kind === 'paint' && /^#[0-9a-f]{6}$/i.test(input.default.raw ?? '')
+            ? 'color'
+            : 'text'
+        }
         value={value ?? input.default.raw ?? ''}
         onChange={(e) => onChange(e.target.value)}
       />
@@ -88,22 +95,24 @@ export function ExerciseControls({
   title,
   groups,
   linkedImages,
+  customSource,
   values,
   submit,
 }: {
   title: string;
   groups: readonly InputGroup[];
   linkedImages: readonly string[];
+  customSource: boolean;
   values: PreviewValues;
   submit: (values: PreviewValues) => void;
 }) {
   function change(input: TemplateInput, value: string | undefined) {
-    const next = { ...values };
+    const next = new Map(Object.entries(values));
     for (const key of linkedImages.includes(input.key) ? linkedImages : [input.key]) {
-      if (value === undefined) delete next[key];
-      else next[key] = value;
+      if (value === undefined) next.delete(key);
+      else next.set(key, { kind: input.kind, value });
     }
-    submit(next);
+    submit(Object.fromEntries(next));
   }
   return (
     <form
@@ -122,7 +131,8 @@ export function ExerciseControls({
               <BindingField
                 key={input.key}
                 input={input}
-                value={values[input.key]}
+                customSource={customSource}
+                value={values[input.key]?.value}
                 onChange={(value) => change(input, value)}
               />
             ))}

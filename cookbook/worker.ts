@@ -30,18 +30,25 @@ function reply(response: PreviewResponse) {
 self.onmessage = async ({ data }: MessageEvent<PreviewRequest>) => {
   const { id } = data;
   try {
-    const template = await load(templates, id, async () =>
-      unwrap(inspect(await read(`recipes/${id}.svg`))),
-    );
+    const source = data.kind === 'edit' ? data.source : null;
+    const template =
+      source !== null
+        ? unwrap(inspect(source))
+        : await load(templates, id, async () => unwrap(inspect(await read(`recipes/${id}.svg`))));
     if (data.kind === 'inspect') {
       reply({ kind: 'groups', id, groups: template.groups });
       return;
     }
     const assignments: Binding[] = [];
+    const retained = new Map<string, (typeof data.values)[string]>();
     for (const input of template.inputs) {
-      const value = data.values[input.key];
-      if (value === undefined) continue;
+      const override = data.values[input.key];
+      if (override?.kind !== input.kind) continue;
+      retained.set(input.key, override);
+      const { value } = override;
       if (input.kind === 'image') {
+        if (value !== 'beacon' && value !== 'headland')
+          throw new Error('Unknown cookbook artwork.');
         const bytes = await load(artwork, value, () => read(`artwork/${value}.png`));
         assignments.push({
           key: input.key,
@@ -57,13 +64,16 @@ self.onmessage = async ({ data }: MessageEvent<PreviewRequest>) => {
       kind: 'svg',
       id,
       revision: data.revision,
-      svg: unwrap(template.bind(assignments)).svg,
+      svg: source === null && !assignments.length ? null : unwrap(template.bind(assignments)).svg,
+      ...(data.kind === 'edit' && {
+        edited: { groups: template.groups, values: Object.fromEntries(retained) },
+      }),
     });
   } catch (error) {
     reply({
       kind: 'error',
       id,
-      revision: data.kind === 'bind' ? data.revision : null,
+      revision: data.kind === 'inspect' ? null : data.revision,
       error: error instanceof Error ? error.message : String(error),
     });
   }
