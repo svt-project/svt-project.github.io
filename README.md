@@ -19,7 +19,8 @@ The [coordinator](https://github.com/svt-project/.github/issues/5) tracks author
 Edit the React components as TSX in `site/`. `site/Layout.tsx` owns the shared project banner,
 navigation and footer. All four deployed pages share the same menu, including the Authoring Guide. Page content lives in `site/pages/` and `cookbook/`.
 
-Use Node 24.2 or later to regenerate the three public HTML files after component edits.
+Use Node 26 LTS for local builds and cookbook checks, matching Pages CI. Regenerate the three
+public HTML files after component edits.
 The generated pages in `public/` are checked-in snapshots of the three core pages.
 The public build type-checks the page sources independently of the cookbook.
 
