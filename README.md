@@ -38,11 +38,11 @@ URL without a trailing slash may redirect to the HTML directory; its XML identit
 
 ## Authoring Guide
 
-The exercises in `cookbook/` use the published `@svt-project/svt-js@1.0.0-rc.2` package.
-From the site checkout, install the locked dependencies and start the preview.
+The cookbook uses the published `@svt-project/svt-js@1.0.0-rc.3` package. To preview it locally, run
+these commands from the site checkout.
 
 ```sh
-npm ci
+npm ci --ignore-scripts
 npm run build:cookbook
 npm run preview:cookbook
 ```
@@ -77,6 +77,9 @@ The PNGs give the outer SVG frame a raster image with a fixed aspect ratio for c
 
 The fit-or-crop and ticket examples exercise repeated image and text keys from the
 SVT 1.0.0 specification. Each uses one form field to update multiple targets.
+For a common opaque paint, the Worker derives a color-picker value from the authored literal.
+Alpha-bearing and context-dependent paints retain a text field. The image selector describes the
+authored reference and binds replacement artwork only when selected.
 These exercises test authoring and browser behavior. Font metrics and glyph coverage depend on
 installed fonts. When the stable JavaScript package is published, update the exact dependency pin
 and lockfile to `1.0.0` and rerun the cookbook checks.

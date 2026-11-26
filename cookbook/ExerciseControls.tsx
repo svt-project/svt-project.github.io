@@ -1,7 +1,6 @@
 import { useId, type ReactNode } from 'react';
 import { FiRotateCcw } from 'react-icons/fi';
-import type { InputGroup, TemplateInput } from '@svt-project/svt-js';
-import type { PreviewValues } from './preview-messages.ts';
+import type { ControlGroup, ControlInput, PreviewValues } from './preview-messages.ts';
 
 const paintPresets = new Map([
   ['#ae4b32', 'Clay'],
@@ -12,12 +11,10 @@ const hexColor = /^#[0-9a-f]{6}$/i;
 
 function BindingField({
   input,
-  customSource,
   value,
   onChange,
 }: {
-  input: TemplateInput;
-  customSource: boolean;
+  input: ControlInput;
   value: string | undefined;
   onChange: (value: string | undefined) => void;
 }) {
@@ -29,17 +26,16 @@ function BindingField({
       : input.label;
   let field;
   if (input.kind === 'image') {
-    const showAuthored = customSource || input.default.state !== 'common';
     field = (
       <select
         id={fieldId}
         aria-describedby={helpId}
-        value={value ?? (showAuthored ? '' : 'headland')}
+        value={value ?? ''}
         onChange={(e) => onChange(e.target.value || undefined)}
       >
-        {showAuthored && <option value="">Template artwork</option>}
-        <option value="headland">Headland · landscape</option>
+        <option value="">{input.artworkLabel}</option>
         <option value="beacon">Beacon · portrait</option>
+        <option value="headland">Headland · landscape</option>
       </select>
     );
   } else if (input.kind === 'paint' && input.default.state !== 'common') {
@@ -63,24 +59,26 @@ function BindingField({
       </select>
     );
   } else {
+    const picker =
+      input.kind === 'paint' &&
+      input.pickerValue !== null &&
+      (value === undefined || hexColor.test(value))
+        ? input.pickerValue
+        : null;
     field = (
       <input
         id={fieldId}
         aria-describedby={helpId}
-        type={
-          input.kind === 'paint' &&
-          hexColor.test(input.default.raw ?? '') &&
-          (value === undefined || hexColor.test(value))
-            ? 'color'
-            : 'text'
-        }
+        type={picker === null ? 'text' : 'color'}
         placeholder={
           input.default.state === 'mixed' && value === undefined
             ? 'Multiple template values'
             : undefined
         }
-        value={value ?? input.default.raw ?? ''}
-        onChange={(e) => onChange(e.target.value)}
+        value={value ?? picker ?? input.default.raw ?? ''}
+        onChange={(e) => {
+          if (value !== undefined || picker !== e.target.value) onChange(e.target.value);
+        }}
       />
     );
   }
@@ -97,7 +95,7 @@ function BindingField({
   );
 }
 
-function FormGroup({ group, children }: { group: InputGroup; children: ReactNode }) {
+function FormGroup({ group, children }: { group: ControlGroup; children: ReactNode }) {
   const helpId = useId();
   if (group.key === null) return <>{children}</>;
   return (
@@ -126,19 +124,17 @@ export function ExerciseControls({
   title,
   groups,
   awaitingGroups,
-  customSource,
   values,
   submit,
 }: {
   children?: ReactNode;
   title: string;
-  groups: readonly InputGroup[];
+  groups: readonly ControlGroup[];
   awaitingGroups: boolean;
-  customSource: boolean;
   values: PreviewValues;
   submit: (values: PreviewValues) => void;
 }) {
-  function change(input: TemplateInput, value: string | undefined) {
+  function change(input: ControlInput, value: string | undefined) {
     const next = new Map(Object.entries(values));
     if (value === undefined) next.delete(input.key);
     else next.set(input.key, { kind: input.kind, value });
@@ -160,7 +156,6 @@ export function ExerciseControls({
             <BindingField
               key={input.key}
               input={input}
-              customSource={customSource}
               value={values[input.key]?.value}
               onChange={(value) => change(input, value)}
             />

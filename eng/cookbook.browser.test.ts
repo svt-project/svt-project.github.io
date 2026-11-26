@@ -108,6 +108,63 @@ test('all authored previews accept bindings and reset to the downloadable SVG', 
   }
 });
 
+test('the paint picker preserves authored spelling, alpha, context and shared defaults', async (t) => {
+  const page = await openPage(t);
+  await page.goto(guide + '#change-fill');
+  const recipe = page.locator('[data-exercise="change-fill"]');
+  const field = recipe.getByLabel('Pennant', { exact: true });
+  assert.equal(await field.inputValue(), '#ce6347');
+  assert.match(await renderedSvg(recipe), /fill="rgb\(206 99 71\)"/);
+  await recipe.getByRole('button', { name: 'Edit full template' }).click();
+  const original = await readFile('.local/site/cookbook/recipes/change-fill.svg', 'utf8');
+  for (const [raw, type, value] of [
+    ['red', 'color', '#ff0000'],
+    ['#f00', 'color', '#ff0000'],
+    ['rgb(255 0 0 / 50%)', 'text', 'rgb(255 0 0 / 50%)'],
+    ['currentColor', 'text', 'currentColor'],
+    ['url(#ink) red', 'text', 'url(#ink) red'],
+  ] as const) {
+    await previewChange(recipe, () => editSource(recipe, original.replace('rgb(206 99 71)', raw)));
+    assert.equal(await field.getAttribute('type'), type);
+    assert.equal(await field.inputValue(), value);
+    assert((await renderedSvg(recipe)).includes('fill="' + raw + '"'));
+  }
+  await previewChange(recipe, () => editSource(recipe, original.replace('rgb(206 99 71)', 'red')));
+  await previewChange(recipe, () => field.fill('#123456'));
+  assert((await renderedSvg(recipe)).includes('fill="#123456"'));
+  await previewChange(recipe, () => recipe.getByRole('button', { name: 'Reset values' }).click());
+  assert((await renderedSvg(recipe)).includes('fill="red"'));
+  const shared = original
+    .replace('rgb(206 99 71)', 'red')
+    .replace('</svg>', '<path data-svt-stroke="pennant" stroke="#ff0000"/></svg>');
+  await previewChange(recipe, () => editSource(recipe, shared));
+  assert.equal(await field.locator('option:checked').textContent(), 'Authored colors');
+});
+
+test('image controls describe authored references and bind only explicit selections', async (t) => {
+  const page = await openPage(t);
+  await page.goto(guide + '#replace-image');
+  const recipe = page.locator('[data-exercise="replace-image"]');
+  const field = recipe.getByLabel('Illustration', { exact: true });
+  assert.equal(await field.locator('option:checked').textContent(), 'Embedded artwork · image/png');
+  await recipe.getByRole('button', { name: 'Edit full template' }).click();
+  const original = await readFile('.local/site/cookbook/recipes/replace-image.svg', 'utf8');
+  const relative = original.replace(/href="data:[^"]+"/, 'href="artwork/postcard.png"');
+  await previewChange(recipe, () => editSource(recipe, relative));
+  assert.equal(
+    await field.locator('option:checked').textContent(),
+    'Template artwork · relative reference',
+  );
+  await previewChange(recipe, async () => {
+    await field.selectOption('beacon');
+  });
+  assert((await renderedSvg(recipe)).includes('href="data:image/png;base64,'));
+  await previewChange(recipe, async () => {
+    await field.selectOption('');
+  });
+  assert((await renderedSvg(recipe)).includes('href="artwork/postcard.png"'));
+});
+
 test('every example opens its own full template using the shared editor', async (t) => {
   const page = await openPage(t);
   await page.goto(guide);
