@@ -101,7 +101,7 @@ article { container-type: inline-size; }
 }
 
 .renderer-notes { max-width: 70ch; }
-.renderer-notes table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.renderer-notes table { width: 100%; overflow-wrap: anywhere; border-collapse: collapse; font-variant-numeric: tabular-nums; }
 .renderer-notes caption { text-align: left; margin-bottom: .5em; }
 .renderer-notes th, .renderer-notes td { text-align: start; padding: .4em; border-bottom: 1px solid var(--line); }
 .renderer-notes li + li { margin-top: .5em; }
