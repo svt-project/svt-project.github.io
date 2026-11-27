@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" data-svt-version="1.0" viewBox="0 0 720 280" font-family="sans-serif">
+  <rect width="720" height="280" fill="#e3e8da"/>
+  <image x="44" y="32" width="180" height="180" preserveAspectRatio="xMinYMin slice" data-svt-image="artwork" data-svt-label="Illustration" href="../artwork/headland.png"/>
+  <image x="270" y="32" width="180" height="180" preserveAspectRatio="xMaxYMax slice" data-svt-image="artwork" data-svt-label="Illustration" href="../artwork/headland.png"/>
+  <image x="496" y="32" width="180" height="180" preserveAspectRatio="none" data-svt-image="artwork" data-svt-label="Illustration" href="../artwork/headland.png"/>
+  <g text-anchor="middle" fill="#254b42" font-size="18">
+    <text x="134" y="245">Top left</text>
+    <text x="360" y="245">Bottom right</text>
+    <text x="586" y="245">Stretch</text>
+  </g>
+</svg>

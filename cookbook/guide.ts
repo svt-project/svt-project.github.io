@@ -59,7 +59,7 @@ export const groups: readonly RecipeGroup[] = [
         alt: 'A single coastal illustration mounted on a postcard.',
         note: '`data-svt-image` makes the artwork in a postcard replaceable.',
         lesson:
-          'The `<image>` element gets its starting artwork from `href`. SVT embeds the selected artwork in that attribute, and SVG uses the element’s `width` and `height` to size the replacement.',
+          'The `<image>` element gets its starting artwork from `href`. SVT embeds the selected artwork in that attribute, and SVG uses the element’s `width` and `height` to size the replacement. A relative `href` such as `artwork/postcard.png` resolves against the SVG document’s base URL. Moving the SVG changes where a viewer looks for that file. Preserve the directory layout, update the reference, or embed the image as the cookbook downloads do.',
         excerpt: ['image'],
       },
       {
@@ -69,6 +69,14 @@ export const groups: readonly RecipeGroup[] = [
         note: '`preserveAspectRatio` lets a frame show the whole image or crop it to fill the space.',
         lesson:
           'Both `<image>` elements use `data-svt-image="artwork"`, so one image choice updates both frames. With `meet`, SVG scales the whole image to fit inside the frame. With `slice`, it fills the frame and crops the excess. Both use `xMidYMid` to center the result.',
+        excerpt: ['image'],
+      },
+      {
+        id: 'align-image',
+        title: 'Keep one corner visible when cropping an image',
+        alt: 'Three square frames show the top-left crop, bottom-right crop, and stretched whole illustration.',
+        note: 'Corner alignment chooses which edge survives a crop. `none` stretches the whole image into the frame.',
+        lesson: 'All three frames share the `artwork` input. The wide headland loses its right edge with `xMinYMin slice` and its left edge with `xMaxYMax slice`. Switching to the tall beacon moves the crop to the bottom or top instead. In the third frame, `preserveAspectRatio="none"` scales each axis independently, turning the round sun into an oval.',
         excerpt: ['image'],
       },
       {
@@ -84,7 +92,7 @@ export const groups: readonly RecipeGroup[] = [
         title: 'Zoom in on part of an image',
         alt: 'A dashed square marks a detail on the full illustration. The neighboring frame shows that region at twice the size.',
         note: 'A smaller `viewBox` enlarges the outlined part of the image while keeping its proportions.',
-        lesson: 'The whole image fits inside a 200 × 200 drawing area using `xMidYMid meet`. The detail’s `viewBox="65 48 100 100"` starts 65 units from the left and 48 from the top. Its 100 × 100 area fills a 200 × 200 frame at 2× scale. The first two numbers position the crop. Reducing the last two in the same proportion zooms in further.',
+        lesson: 'The whole image fits inside a 200 × 200 drawing area using `xMidYMid meet`. The detail’s `viewBox="65 48 100 100"` starts 65 units from the left and 48 from the top. Its 100 × 100 area fills a 200 × 200 frame at 2× scale. The first two numbers position the crop. Reducing the last two in the same proportion zooms in further. Zoom and clipping change what is visible. The complete image remains in the SVG. To discard pixels or reduce the embedded payload, crop and re-encode the source before binding it.',
         excerpt: ['defs', { element: 'svg', attribute: 'x' }],
       },
       {

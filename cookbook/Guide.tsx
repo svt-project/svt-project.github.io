@@ -1,6 +1,7 @@
 import type { Exercise, GuideGroup } from './guide-model.ts';
 import { useState, useEffect } from 'react';
 import { GuideContents, LinkedHeading } from './GuideNavigation.tsx';
+import { RendererNotes } from './RendererNotes.tsx';
 import { LivePreview } from './LivePreview.tsx';
 
 function SourceExcerpt({ id, snippet }: Pick<Exercise, 'id' | 'snippet'>) {
@@ -86,6 +87,7 @@ export function Guide({ groups }: { groups: readonly GuideGroup[] }) {
             ))}
           </section>
         ))}
+        <RendererNotes interactive={!!worker} />
       </main>
     </div>
   );

@@ -53,6 +53,7 @@ export function GuideContents({ groups }: { groups: readonly GuideGroup[] }) {
               </ul>
             </div>
           ))}
+          {link('renderer-notes', 'Checking a template', 'group-link')}
         </nav>
       </details>
     </aside>
